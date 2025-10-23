@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <link rel="stylesheet" th:href="@{/css/styles_for_login.css}">
+    <link rel="stylesheet" th:href="@{/css/signup.css}">
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+</head>
+
+<body>
+    <div class="message  error" th:if="${message!=null and message.contains('Email đã được đăng kí!')}">[[${message}]]
+    </div>
+    <div class="message success" th:if="${message!=null and message.contains('Đăng kí thành công!')}">[[${message}]]
+    </div>
+    <div class="message error" id="recaptchaError" style="display:none;"></div>
+    <div class="form-container">
+        <h2>Create Account</h2>
+        <p>Please fill in your details</p>
+        <form th:action="@{/signup}" method="post" role="form" th:object="${user}" onsubmit="return validateForm()">
+            <label for="userbame">Username</label>
+            <input th:field="*{username}" type="text" name="username" id="username" placeholder="Enter your username"
+                required>
+
+            <label for="fullName">Full Name</label>
+            <input th:field="*{fullname}" type="text" name="fullname" id="fullName" placeholder="Enter your full name"
+                required>
+
+            <label for="signupEmail">Email Address</label>
+            <input th:field="*{email}" type="email" name="email" id="signupEmail" placeholder="Enter your email"
+                required>
+
+            <label for="signupPassword">Password</label>
+            <input th:field="*{password}" type="password" name="password" id="signupPassword"
+                placeholder="Create a password" required>
+
+            <button type="submit">Create Account</button>
+            <p>Already have an account? <a href="/login">Sign In</a></p>
+        </form>
+    </div>
+
+</body>
+
+</html>
