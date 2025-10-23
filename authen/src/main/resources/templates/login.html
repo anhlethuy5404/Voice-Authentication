@@ -3,26 +3,154 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-    <link rel="stylesheet" th:href="@{/css/login.css}">
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <title>Đăng nhập</title>
+    <style>
+        /* Reset mặc định */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Poppins", sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #74b9ff, #a29bfe);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .form-container {
+            background: #fff;
+            padding: 40px 35px;
+            border-radius: 16px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            width: 380px;
+            text-align: center;
+            animation: fadeIn 0.6s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            color: #2d3436;
+            font-size: 26px;
+            margin-bottom: 10px;
+        }
+
+        p {
+            color: #636e72;
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            text-align: left;
+            font-weight: 500;
+            color: #2d3436;
+            margin-bottom: 6px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #dfe6e9;
+            border-radius: 8px;
+            margin-bottom: 18px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        input:focus {
+            border-color: #74b9ff;
+            box-shadow: 0 0 0 3px rgba(116, 185, 255, 0.3);
+            outline: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #0984e3, #74b9ff);
+            color: white;
+            font-weight: bold;
+            font-size: 15px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        a {
+            color: #0984e3;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+
+        a:hover {
+            color: #0652DD;
+            text-decoration: underline;
+        }
+
+        .message {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 12px 18px;
+            border-radius: 8px;
+            font-size: 15px;
+            animation: fadeInDown 0.5s ease;
+        }
+
+        .message.success {
+            background-color: #55efc4;
+            color: #2d3436;
+        }
+
+        .message.error {
+            background-color: #ff7675;
+            color: white;
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translate(-50%, -20px); }
+            to { opacity: 1; transform: translate(-50%, 0); }
+        }
+    </style>
 </head>
 <body>
-    <div class="message  success" th:if="${message!=null}">[[${message}]]</div>
-    <div class="message error" th:if="${error!=null}">[[${error}]]</div>
-    <div class="form-container">
-        <h2>Hello</h2>
-        <p>Please sign in to continue</p>
-        <form th:action="@{/login}" method="post" onsubmit="return validateForm()">
-            <label for="username">Username</label>
-            <input name="username" type="username" id="username" placeholder="Enter your username" required>
+<div class="message success" th:if="${message!=null}">[[${message}]]</div>
+<div class="message error" th:if="${error!=null}">[[${error}]]</div>
 
-            <label for="password">Password</label>
-            <input name="password" type="password" id="password" placeholder="Enter your password" required>
+<div class="form-container">
+    <h2>Xin chào 👋</h2>
+    <p>Đăng nhập để tiếp tục sử dụng hệ thống</p>
 
-            <button type="submit">Sign In</button>
-            <p>Don't have an account? <a href="/signup">Create Account</a></p>
-        </form>
-    </div>
+    <form th:action="@{/login}" method="post">
+        <label for="username">Tên đăng nhập</label>
+        <input name="username" type="text" id="username" placeholder="Nhập tên đăng nhập" required>
+
+        <label for="password">Mật khẩu</label>
+        <input name="password" type="password" id="password" placeholder="Nhập mật khẩu" required>
+
+        <button type="submit">Đăng nhập</button>
+
+        <p style="margin-top: 15px;">Chưa có tài khoản?
+            <a th:href="@{/signup}">Đăng ký ngay</a>
+        </p>
+    </form>
+</div>
 </body>
 </html>
