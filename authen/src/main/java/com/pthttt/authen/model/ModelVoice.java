@@ -3,23 +3,34 @@ package com.pthttt.authen.model;
 import java.util.Date;
 import java.util.List;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 
 @Entity
 @Table(name = "model_voice")
 public class ModelVoice {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
+    @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
-    private List<Float> embeddingVector;
+
+    // ✅ Sửa lại từ List<Float> → byte[]
+    @Lob
+    @Column(columnDefinition = "LONGBLOB")
+    private byte[] embeddingVector;
 
     @ManyToOne
     @JoinColumn(name = "voice_id")
@@ -32,13 +43,13 @@ public class ModelVoice {
     @OneToMany(mappedBy = "modelVoice")
     private List<AuthLog> authLogs;
 
-    public ModelVoice() {
-    }
-    
-    public ModelVoice(Date createdAt, List<Float> embeddingVector) {
+    public ModelVoice() {}
+
+    public ModelVoice(Date createdAt, byte[] embeddingVector) {
         this.createdAt = createdAt;
         this.embeddingVector = embeddingVector;
     }
+
     public int getId() {
         return id;
     }
@@ -54,11 +65,12 @@ public class ModelVoice {
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
-    public List<Float> getEmbeddingVector() {
+
+    public byte[] getEmbeddingVector() {
         return embeddingVector;
     }
 
-    public void setEmbeddingVector(List<Float> embeddingVector) {
+    public void setEmbeddingVector(byte[] embeddingVector) {
         this.embeddingVector = embeddingVector;
     }
 
@@ -77,11 +89,12 @@ public class ModelVoice {
     public void setTrainRun(TrainRun trainRun) {
         this.trainRun = trainRun;
     }
+
     public List<AuthLog> getAuthLogs() {
         return authLogs;
     }
+
     public void setAuthLogs(List<AuthLog> authLogs) {
         this.authLogs = authLogs;
     }
 }
-

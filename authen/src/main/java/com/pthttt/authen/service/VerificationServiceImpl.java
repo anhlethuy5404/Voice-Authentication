@@ -1,11 +1,11 @@
 package com.pthttt.authen.service;
 
 import java.io.File;
+import java.nio.ByteBuffer;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -40,39 +40,32 @@ public class VerificationServiceImpl implements VerificationService {
 
         // 2️⃣ Chuẩn bị request JSON
         RestTemplate restTemplate = new RestTemplate();
-        String url = aiServerUrl + "/voice/register_voice/"; // Thay đổi endpoint
+        String url = aiServerUrl + "/voice/register_voice/";
 
-        Map<String, String> request = new HashMap<>();
+        Map<String, Object> request = new HashMap<>();
         request.put("model_name", modelName);
         request.put("ckpt_path", ckptPath);
         request.put("file_path", tempFile.getAbsolutePath());
+        request.put("num_classes", 100);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        HttpEntity<Map<String, String>> entity = new HttpEntity<>(request, headers);
+        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(request, headers);
 
         // 3️⃣ Gọi FastAPI
-        ResponseEntity<Map> response = restTemplate.exchange(
-                url, HttpMethod.POST, entity, Map.class
-        );
+        ResponseEntity<Map> response = restTemplate.exchange(url, HttpMethod.POST, entity, Map.class);
 
         // 4️⃣ Xử lý phản hồi
         if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
-            // Lấy danh sách các embedding
+            // embeddings trả về là List<List<Double>>
             List<List<Double>> embeddings = (List<List<Double>>) response.getBody().get("embeddings");
-            System.out.println("Received embeddings: " + embeddings);
 
             if (embeddings != null && !embeddings.isEmpty()) {
-                // Lấy embedding đầu tiên từ danh sách
                 List<Double> embedding = embeddings.get(0);
 
-                // Chuyển đổi List<Double> thành List<Float>
-                List<Float> embeddingVector = embedding.stream()
-                        .map(Double::floatValue)
-                        .collect(Collectors.toList());
-
-                ModelVoice modelVoice = new ModelVoice(new Date(), embeddingVector);
+                byte[] embBytes = convertEmbeddingToBytes(embedding);
+                ModelVoice modelVoice = new ModelVoice(new Date(), embBytes);
                 modelVoiceRepository.save(modelVoice);
             } else {
                 throw new Exception("Không nhận được embedding nào từ server AI.");
@@ -83,5 +76,13 @@ public class VerificationServiceImpl implements VerificationService {
 
         // 5️⃣ Xoá file tạm
         tempFile.delete();
+    }
+
+    private byte[] convertEmbeddingToBytes(List<Double> embedding) {
+        ByteBuffer buffer = ByteBuffer.allocate(embedding.size() * 4);
+        for (Double value : embedding) {
+            buffer.putFloat(value.floatValue());
+        }
+        return buffer.array();
     }
 }

@@ -10,6 +10,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -36,6 +37,9 @@ public class TrainRun {
 
     @OneToMany(mappedBy = "trainRun")
     private List<Hyperparameter> hyperparameters;
+
+    @OneToOne(mappedBy = "trainRun")
+    private Score score;
 
     public TrainRun() {
     }
@@ -125,4 +129,10 @@ public class TrainRun {
         this.hyperparameters = hyperparameters;
     }
     
+    public Score getScore() {
+        return score;
+    }
+    public void setScore(Score score) {
+        this.score = score;
+    }
 }

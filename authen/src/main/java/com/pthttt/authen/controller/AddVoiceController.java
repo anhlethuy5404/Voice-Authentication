@@ -12,14 +12,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.pthttt.authen.service.VoiceService;
+import com.pthttt.authen.service.AddVoiceService;
 
 @Controller
-@RequestMapping("/admin")
-public class AdminController {
+@RequestMapping("/user")
+public class AddVoiceController {
 
     @Autowired
-    private VoiceService voiceService;
+    private AddVoiceService voiceService;
 
     @GetMapping("/add-voice-form")
     public String showAddVoiceForm() {
@@ -40,6 +40,6 @@ public class AdminController {
             redirectAttributes.addFlashAttribute("message", "Failed to upload '" + file.getOriginalFilename() + "'. " + e.getMessage());
         }
 
-        return "redirect:/admin/add-voice-form";
+        return "redirect:/user/add-voice-form";
     }
 }

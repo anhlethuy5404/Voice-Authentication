@@ -8,9 +8,9 @@
     <div th:if="${message}">
         <p th:text="${message}"></p>
     </div>
-    <form method="POST" action="/admin/upload-voice" enctype="multipart/form-data">
+    <form method="POST" th:action="@{/user/upload-voice}" enctype="multipart/form-data">
         <input type="file" name="voiceFile" accept="audio/*" required />
-        <button type-="submit">Upload</button>
+        <button type="submit">Upload</button>
     </form>
     <br/>
     <a href="/home">Back to Home</a>
