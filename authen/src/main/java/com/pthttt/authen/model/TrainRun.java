@@ -13,7 +13,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "train_runs")
+@Table(name = "train_run")
 public class TrainRun {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

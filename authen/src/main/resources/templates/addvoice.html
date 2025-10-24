@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Add Voice</title>
+</head>
+<body>
+    <h1>Upload Your Voice</h1>
+    <div th:if="${message}">
+        <p th:text="${message}"></p>
+    </div>
+    <form method="POST" action="/admin/upload-voice" enctype="multipart/form-data">
+        <input type="file" name="voiceFile" accept="audio/*" required />
+        <button type-="submit">Upload</button>
+    </form>
+    <br/>
+    <a href="/home">Back to Home</a>
+</body>
+</html>
