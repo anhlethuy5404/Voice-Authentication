@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Training Dashboard</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        #status-bar { margin-bottom: 20px; }
+        #status-bar div.stage { display: inline-block; width: 150px; text-align: center; }
+        #status-bar div.current { font-weight: bold; color: green; }
+        table { border-collapse: collapse; width: 100%; margin-bottom: 20px; }
+        table, th, td { border: 1px solid #ccc; }
+        th, td { padding: 8px; text-align: center; }
+        #epoch-log { max-height: 200px; overflow-y: auto; margin-bottom: 20px; }
+        #info-log { max-height: 150px; overflow-y: auto; margin-bottom: 20px; }
+        #completed { border: 1px solid #ccc; padding: 15px; background: #f9f9f9; }
+    </style>
+</head>
+<body>
+<h2>Training Dashboard</h2>
+
+<!-- STATUS -->
+<div id="status-bar">
+    <div class="stage" id="stage-init">Init</div>
+    <div class="stage" id="stage-loading_data">Loading Data</div>
+    <div class="stage" id="stage-loading_model">Loading Model</div>
+    <div class="stage" id="stage-training">Training</div>
+    <div class="stage" id="stage-testing">Testing</div>
+</div>
+
+<!-- INFO -->
+<h3>Info Messages</h3>
+<div id="info-log">
+    <table>
+        <thead>
+        <tr><th>#</th><th>Message</th></tr>
+        </thead>
+        <tbody id="info-table-body"></tbody>
+    </table>
+</div>
+
+<!-- EPOCH -->
+<h3>Epoch Progress</h3>
+<div id="epoch-log">
+    <table>
+        <thead>
+        <tr>
+            <th>Epoch</th>
+            <th>Train Loss</th>
+            <th>Val Loss</th>
+            <th>Train Acc</th>
+            <th>Val Acc</th>
+        </tr>
+        </thead>
+        <tbody id="epoch-table-body"></tbody>
+    </table>
+</div>
+
+<!-- COMPLETED -->
+<div id="completed"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1.6.1/dist/sockjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+<script>
+    const socket = new SockJS('/ws-logs_ui');
+    const stompClient = Stomp.over(socket);
+
+    let infoCount = 0;
+    stompClient.connect({}, function(frame) {
+        stompClient.subscribe('/topic/logs_ui', function(message) {
+            const data = JSON.parse(message.body);
+
+            // STATUS
+            if(data.type === 'status') {
+                // Remove current highlight
+                document.querySelectorAll('#status-bar .stage').forEach(d => d.classList.remove('current'));
+                // Highlight current stage
+                if(data.stage) {
+                    const stageDiv = document.getElementById('stage-' + data.stage);
+                    if(stageDiv) stageDiv.classList.add('current');
+                }
+            }
+
+            // INFO
+            if(data.type === 'info') {
+                const tbody = document.getElementById('info-table-body');
+                infoCount += 1;
+                const row = document.createElement('tr');
+                row.innerHTML = `<td>${infoCount}</td><td>${data.message}</td>`;
+                tbody.appendChild(row);
+            }
+
+            // EPOCH
+            if(data.type === 'epoch') {
+                const tbody = document.getElementById('epoch-table-body');
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                        <td>${data.epoch}/${data.total_epochs}</td>
+                        <td>${data.train_loss.toFixed(4)}</td>
+                        <td>${data.val_loss.toFixed(4)}</td>
+                        <td>${(data.train_acc*100).toFixed(2)}%</td>
+                        <td>${(data.val_acc*100).toFixed(2)}%</td>
+                    `;
+                tbody.appendChild(row);
+            }
+
+            // COMPLETED
+            if(data.type === 'completed') {
+                const div = document.getElementById('completed');
+                div.innerHTML = `
+                        <h3>✅ Training Completed</h3>
+                        <p>${data.message}</p>
+                        <p>Best Val Loss: ${data.best_val_loss}</p>
+                        <p>Checkpoint: ${data.checkpoint_path}</p>
+                        <h4>Test Results:</h4>
+                        <ul>
+                            <li>Accuracy: ${(data.test_results.accuracy*100).toFixed(2)}%</li>
+                            <li>Precision: ${(data.test_results.precision*100).toFixed(2)}%</li>
+                            <li>Recall: ${(data.test_results.recall*100).toFixed(2)}%</li>
+                            <li>F1-score: ${(data.test_results.f1*100).toFixed(2)}%</li>
+                            <li>Loss: ${data.test_results.loss}</li>
+                        </ul>
+                    `;
+            }
+        });
+    });
+</script>
+</body>
+</html>

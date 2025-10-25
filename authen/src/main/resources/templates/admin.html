@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Train Model</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Poppins", sans-serif; }
+        body {
+            background: linear-gradient(135deg, #74b9ff, #a29bfe);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 40px 20px;
+        }
+        h2 {
+            color: #2d3436;
+            font-size: 32px;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        .form-container {
+            background: #fff;
+            padding: 30px 35px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 700px;
+            animation: fadeIn 0.6s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity:0; transform:translateY(20px);}
+            to {opacity:1; transform:translateY(0);}
+        }
+        .form-group { margin-bottom: 20px; display: flex; flex-direction: column; }
+        label { margin-bottom: 8px; font-weight: 600; color: #2d3436; }
+        input, select { padding: 10px 12px; border-radius: 8px; border: 1px solid #dfe6e9; font-size: 15px; transition: 0.3s; }
+        input:focus, select:focus { border-color: #0984e3; outline: none; }
+
+        button {
+            margin-top: 25px;
+            padding: 12px 25px;
+            background: linear-gradient(135deg,#0984e3,#74b9ff);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        button:hover { background: linear-gradient(135deg,#74b9ff,#0984e3); transform: translateY(-2px); }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 25px; font-size: 14px; }
+        th, td { border: 1px solid #dfe6e9; padding: 10px; text-align: left; }
+        th { background-color: #f1f2f6; font-weight: 600; }
+        tr:nth-child(even) { background-color: #f9f9f9; }
+        tr:hover { background-color: #dfe6e9; }
+
+        @media (max-width: 600px) {
+            table, thead, tbody, th, td, tr { display: block; }
+            tr { margin-bottom: 15px; }
+            td { text-align: right; padding-left: 50%; position: relative; }
+            td::before { content: attr(data-label); position: absolute; left: 10px; width: 45%; font-weight: 600; text-align: left; }
+            th { display: none; }
+        }
+
+        /* Inline fields for train/val/test split */
+        .split-container { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+        .split-container input { width: 60px; }
+    </style>
+</head>
+<body>
+
+<h2>Train Model</h2>
+
+<div class="form-container">
+    <form th:action="@{/admin/train}" method="post">
+
+    <!-- Model Name -->
+        <select id="model_name" name="model_name" required>
+            <option value="" disabled selected>-- Chọn model --</option>
+            <option th:each="m : ${models}"
+                    th:value="${m.name}"
+                    th:attr="data-id=${m.id}"
+                    th:text="${m.name}">
+            </option>
+        </select>
+        <input type="hidden" id="model_id" name="model_id" />
+
+        <!-- Model Type -->
+        <div class="form-group">
+            <label for="model_type">Model Type</label>
+            <select id="model_type" name="model_type" required>
+                <option value="embedding">Embedding</option>
+                <option value="deepfake">Deepfake</option>
+            </select>
+        </div>
+
+        <!-- Data Split -->
+        <div class="form-group">
+            <label>Data Split (%)</label>
+            <div class="split-container">
+                <label>Train: <input type="number" name="split_train" value="70" min="0" max="100">%</label>
+                <label>Validation: <input type="number" name="split_val" value="15" min="0" max="100">%</label>
+                <label>Test: <input type="number" name="split_test" value="15" min="0" max="100">%</label>
+            </div>
+            <small style="color: #636e72;">Tổng phải bằng 100%</small>
+        </div>
+
+        <!-- Hyperparameters -->
+        <div class="form-group">
+            <label for="num_workers">Num Workers</label>
+            <input type="number" id="num_workers" name="num_workers" value="0" min="0">
+        </div>
+
+        <div class="form-group">
+            <label for="num_epochs">Num Epochs</label>
+            <input type="number" id="num_epochs" name="num_epochs" value="5" min="1">
+        </div>
+
+        <div class="form-group">
+            <label for="batch_size">Batch Size</label>
+            <input type="number" id="batch_size" name="batch_size" value="4" min="1">
+        </div>
+
+        <div class="form-group">
+            <label for="learning_rate">Learning Rate</label>
+            <input type="number" step="0.0001" id="learning_rate" name="learning_rate" value="0.01" min="0">
+        </div>
+
+        <div class="form-group">
+            <label for="patience">Patience</label>
+            <input type="number" id="patience" name="patience" value="3" min="0">
+        </div>
+
+        <!-- Voice Table -->
+        <table>
+            <thead>
+            <tr>
+                <th>Select</th>
+                <th>User ID</th>
+                <th>File</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="v : ${voices}">
+                <td data-label="Select">
+                    <input type="checkbox"
+                           name="selectedVoices"
+                           th:value="${v.user.id + '::' + v.filePath}" />
+                </td>
+                <td data-label="User ID" th:text="${v.user.id}">User ID</td>
+                <td data-label="File">
+                    <a th:href="@{'/uploads/' + ${v.filePath}}" target="_blank" th:text="${v.filePath}">Voice File</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <button type="submit">Start Training</button>
+    </form>
+</div>
+<script>
+    const modelSelect = document.getElementById("model_name");
+    const modelIdInput = document.getElementById("model_id");
+    modelSelect.addEventListener("change", function() {
+        const selected = this.options[this.selectedIndex];
+        modelIdInput.value = selected.getAttribute("data-id") || "";
+    });
+    window.addEventListener("DOMContentLoaded", () => {
+        const modelSelect = document.getElementById("modelSelect");
+        if (modelSelect && modelSelect.value) {
+            loadModel(modelSelect.value);
+        }
+    });
+
+</script>
+</body>
+</html>
