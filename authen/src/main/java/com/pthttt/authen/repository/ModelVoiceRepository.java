@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface ModelVoiceRepository extends JpaRepository<ModelVoice, Integer> {
-    List<ModelVoice> getByVoiceId(Integer voiceId);
+    List<ModelVoice> getByVoiceId(int voiceId);
 }

@@ -5,13 +5,13 @@ import java.time.LocalDateTime;
 public class HistorySummaryDTO {
     private String filePath;
     private String isRealVoice;
-    private Integer rank;
+    private int rank;
     private String checkType;
-    private Integer userMatch;
+    private int userMatch;
     private float similarity;
     private LocalDateTime createdAt;
     private String modelName;
-    private Integer version;
+    private int version;
 
     public HistorySummaryDTO(){};
 
@@ -31,11 +31,11 @@ public class HistorySummaryDTO {
         this.isRealVoice = isRealVoice;
     }
 
-    public Integer getRank() {
+    public int getRank() {
         return rank;
     }
 
-    public void setRank(Integer rank) {
+    public void setRank(int rank) {
         this.rank = rank;
     }
 
@@ -47,11 +47,11 @@ public class HistorySummaryDTO {
         this.checkType = checkType;
     }
 
-    public Integer getUserMatch() {
+    public int getUserMatch() {
         return userMatch;
     }
 
-    public void setUserMatch(Integer userMatch) {
+    public void setUserMatch(int userMatch) {
         this.userMatch = userMatch;
     }
 
@@ -79,11 +79,11 @@ public class HistorySummaryDTO {
         this.modelName = modelName;
     }
 
-    public Integer getVersion() {
+    public int getVersion() {
         return version;
     }
 
-    public void setVersion(Integer version) {
+    public void setVersion(int version) {
         this.version = version;
     }
 }

@@ -25,27 +25,27 @@ public class HistoryService {
     @Autowired
     private ModelVoiceRepository modelVoiceRepository;
 
-    public List<Voice> getVoicesByUserId(Integer userId) {
+    public List<Voice> getVoicesByUserId(int userId) {
         return voiceRepository.findByUserId(userId);
     }
 
-    public List<ModelVoice> getModelVoicesByVoiceId(Integer voiceId) {
+    public List<ModelVoice> getModelVoicesByVoiceId(int voiceId) {
         return modelVoiceRepository.getByVoiceId(voiceId);
     }
 
-    public List<AuthLog> getAuthLogsByModelVoiceId(Integer modelVoiceId) {
+    public List<AuthLog> getAuthLogsByModelVoiceId(int modelVoiceId) {
         return authLogRepository.findByModelVoiceId(modelVoiceId);
     }
 
-    public TrainRun getTrainRunByModelVoiceId(Integer modelVoiceId) {
+    public TrainRun getTrainRunByModelVoiceId(int modelVoiceId) {
         return trainRunRepository.findByModelVoiceId(modelVoiceId);
     }
 
-    public Model getModelByTrainRunId(Integer trainRunId) {
+    public Model getModelByTrainRunId(int trainRunId) {
         return modelRepository.findByTrainRunId(trainRunId);
     }
 
-    public List<HistorySummaryDTO> getHistoriesByUserId(Integer userId) {
+    public List<HistorySummaryDTO> getHistoriesByUserId(int userId) {
         List <HistorySummaryDTO> histories = new ArrayList<>();
 
         List<Voice> voices = getVoicesByUserId(userId);

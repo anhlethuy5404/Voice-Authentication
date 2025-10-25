@@ -15,11 +15,14 @@ import java.util.List;
 @RequestMapping("/history")
 public class HistoryController {
 
-    @Autowired
-    private HistoryService historyService;
+    private final HistoryService historyService;
+
+    public HistoryController(HistoryService historyService) {
+        this.historyService = historyService;
+    }
 
     @GetMapping
-    public String getAuthLogs(@RequestParam("userId") Integer userId, Model model) {
+    public String getAuthLogs(@RequestParam("userId") int userId, Model model) {
         List<HistorySummaryDTO> histories = historyService.getHistoriesByUserId(userId);
         model.addAttribute("histories", histories);
         return "history";

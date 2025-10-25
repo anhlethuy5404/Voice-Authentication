@@ -10,5 +10,7 @@ import org.springframework.stereotype.Repository;
 public interface ModelRepository extends JpaRepository<Model, Integer> {
 
     @Query("SELECT m FROM Model m JOIN m.trainRuns tr WHERE tr.id = :trainRunId")
-    Model findByTrainRunId(@Param("trainRunId") Integer trainRunId);
+    Model findByTrainRunId(@Param("trainRunId") int trainRunId);
+
+    Model getModelById(int modelId);
 }
