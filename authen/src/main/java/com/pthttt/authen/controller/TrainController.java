@@ -43,9 +43,12 @@ public class TrainController {
             @RequestParam("learning_rate") double learningRate,
             @RequestParam("patience") int patience,
             @RequestParam(value = "selectedVoices", required = false) List<String> selectedVoices,
-            Model model
-    ) {
+            Model model) {
         log.info("🚀 Starting training for model: {}", modelName);
+
+        int newVerison = trainService.findMaxVersionByModelId(modelId) + 1;
+        System.out.println("New version: " + newVerison);
+        String saveDir = "../model/" + modelName + "/" + modelType + "/version_" + String.valueOf(newVerison);
 
         // ✅ Parse selected voices
         List<Map<String, String>> parsedVoices = new java.util.ArrayList<>();
@@ -62,15 +65,16 @@ public class TrainController {
         }
 
         // ✅ Chuẩn bị dataset (train / val split)
-        Map<String, Object> dataset = trainService.prepareDataset(parsedVoices, splitTrain);
+        Map<String, Object> dataset = trainService.prepareDataset(parsedVoices, splitTrain, modelType);
         log.info("✅ train voices: {}", dataset.get("train_data"));
         log.info("val voices: {}", dataset.get("val_data"));
         log.info("num voices: {}", dataset.get("num_classes"));
 
         try {
-            // 1️⃣ Tạo config JSON (không lưu file)
+            // 1 Tạo config JSON
             Map<String, Object> config = new HashMap<>();
             config.put("model_id", modelId);
+            config.put("version", newVerison);
             config.put("model_name", modelName);
             config.put("model_type", modelType);
             config.put("num_classes", dataset.get("num_classes"));
@@ -81,6 +85,7 @@ public class TrainController {
             config.put("batch_size", batchSize);
             config.put("learning_rate", learningRate);
             config.put("patience", patience);
+            config.put("save_dir", saveDir);
             config.put("selected_voices", selectedVoices != null ? selectedVoices : List.of());
 
             // ✨ Chuyển sang chuỗi JSON
@@ -123,5 +128,28 @@ public class TrainController {
         }
 
         return "train";
+    }
+
+    // ========== LƯU KẾT QUẢ TRAINING ==========
+    @PostMapping("/train/save-result")
+    @ResponseBody
+    public Map<String, Object> saveTrainingResult(@RequestBody Map<String, Object> data) {
+        try {
+            log.info("📥 Received save request with data: {}", data);
+
+            String result = trainService.saveTrainingResult(data);
+
+            log.info("✅ Training result saved successfully!");
+
+            return Map.of(
+                    "success", true,
+                    "message", "Model saved successfully!",
+                    "result", result);
+        } catch (Exception e) {
+            log.error("❌ Failed to save training result: {}", e.getMessage(), e);
+            return Map.of(
+                    "success", false,
+                    "message", "Failed to save: " + e.getMessage());
+        }
     }
 }
