@@ -5,10 +5,9 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.pthttt.authen.model.User;
+import com.pthttt.authen.model.TrainRun;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Integer> {
-    User findByUsername(String username);
-    List<User> findByRole(String role);
+public interface TrainRunRepository extends JpaRepository<TrainRun, Integer> {
+    List<TrainRun> findByModelId(Integer modelId);
 }

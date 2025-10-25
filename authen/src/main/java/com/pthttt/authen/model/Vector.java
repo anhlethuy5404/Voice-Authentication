@@ -17,8 +17,8 @@ import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 
 @Entity
-@Table(name = "model_voice")
-public class ModelVoice {
+@Table(name = "vector")
+public class Vector {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,7 +27,6 @@ public class ModelVoice {
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
 
-    // ✅ Sửa lại từ List<Float> → byte[]
     @Lob
     @Column(columnDefinition = "LONGBLOB")
     private byte[] embeddingVector;
@@ -43,9 +42,9 @@ public class ModelVoice {
     @OneToMany(mappedBy = "modelVoice")
     private List<AuthLog> authLogs;
 
-    public ModelVoice() {}
+    public Vector() {}
 
-    public ModelVoice(Date createdAt, byte[] embeddingVector) {
+    public Vector(Date createdAt, byte[] embeddingVector) {
         this.createdAt = createdAt;
         this.embeddingVector = embeddingVector;
     }

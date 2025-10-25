@@ -28,7 +28,7 @@ public class AuthLog {
 
     @ManyToOne
     @JoinColumn(name = "modelVoice_id")
-    private ModelVoice modelVoice;
+    private Vector modelVoice;
 
     public AuthLog() {
     }
@@ -72,10 +72,10 @@ public class AuthLog {
     public void setRank(int rank) {
         this.rank = rank;
     }
-    public ModelVoice getModelVoice() {
+    public Vector getModelVoice() {
         return modelVoice;
     }
-    public void setModelVoice(ModelVoice modelVoice) {
+    public void setModelVoice(Vector modelVoice) {
         this.modelVoice = modelVoice;
     }
     public int getUserMatch() {

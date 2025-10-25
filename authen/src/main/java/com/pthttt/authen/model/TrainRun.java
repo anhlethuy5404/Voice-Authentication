@@ -22,6 +22,7 @@ public class TrainRun {
     private int version;
     private String status; 
     private String filePath;
+    private String type;
     private LocalDateTime startedAt;
     private LocalDateTime finishedAt;
 
@@ -30,7 +31,7 @@ public class TrainRun {
     private Model model;
 
     @OneToMany(mappedBy = "trainRun")
-    private List<ModelVoice> modelVoice;
+    private List<Vector> modelVoice;
 
     @OneToMany(mappedBy = "trainRun")
     private List<TrainLog> trainLogs;
@@ -105,11 +106,11 @@ public class TrainRun {
         this.model = model;
     }
 
-    public List<ModelVoice> getModelVoice() {
+    public List<Vector> getModelVoice() {
         return modelVoice;
     }
 
-    public void setModelVoice(List<ModelVoice> modelVoice) {
+    public void setModelVoice(List<Vector> modelVoice) {
         this.modelVoice = modelVoice;
     }
 
@@ -134,5 +135,11 @@ public class TrainRun {
     }
     public void setScore(Score score) {
         this.score = score;
+    }
+    public String getType() {
+        return type;
+    }
+    public void setType(String type) {
+        this.type = type;
     }
 }

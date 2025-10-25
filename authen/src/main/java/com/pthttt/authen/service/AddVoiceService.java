@@ -39,18 +39,22 @@ public class AddVoiceService {
             throw new RuntimeException("User not found");
         }
 
-        String userDirId = String.format("id%05d", user.getId());
-        
-        // Đặt tên file xxxxx.wav
-        long voiceCount = voiceRepository.countByUser(user);
+        // Lưu voice để lấy id
+        Voice voice = new Voice();
+        voice.setUser(user);
+        voice.setCreatedAt(new Date());
+        Voice savedVoice = voiceRepository.save(voice);
+
+        // Đặt tên file <id>.wav
         String originalFilename = file.getOriginalFilename();
         String extension = "";
         if (originalFilename != null && originalFilename.contains(".")) {
             extension = originalFilename.substring(originalFilename.lastIndexOf("."));
         }
-        String newFileName = String.format("%05d", voiceCount) + extension;
+        String newFileName = String.format("%05d", savedVoice.getId()) + extension;
 
         // Tạo dẫn tương đối lưu DB
+        String userDirId = String.format("id%05d", user.getId());
         Path absoluteUploadPath = rootPath.resolve(uploadDirName);
         Path absoluteUserDirPath = absoluteUploadPath.resolve(userDirId);
         if (!Files.exists(absoluteUserDirPath)) {
@@ -62,11 +66,8 @@ public class AddVoiceService {
         // Lưu file
         Files.copy(file.getInputStream(), absoluteFilePath, StandardCopyOption.REPLACE_EXISTING);
 
-        // Lưu Voice
-        Voice voice = new Voice();
-        voice.setFilePath(relativePath);
-        voice.setUser(user);
-        voice.setCreatedAt(new Date());
-        voiceRepository.save(voice);
+        // Cập nhật voice với đường dẫn file
+        savedVoice.setFilePath(relativePath);
+        voiceRepository.save(savedVoice);
     }
 }

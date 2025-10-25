@@ -1,7 +1,9 @@
 package com.pthttt.authen.service;
 
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.stereotype.Service;
 
-public interface VerificationService {
-    void getEmbedding(MultipartFile audioFile, String modelName, String ckptPath) throws Exception;
+@Service
+public class VerificationService {
+
+    
 }
