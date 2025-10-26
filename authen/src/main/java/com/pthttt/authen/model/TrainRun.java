@@ -31,7 +31,7 @@ public class TrainRun {
     private Model model;
 
     @OneToMany(mappedBy = "trainRun")
-    private List<Vector> modelVoice;
+    private List<Vector> vectors;
 
     @OneToMany(mappedBy = "trainRun")
     private List<TrainLog> trainLogs;
@@ -106,12 +106,12 @@ public class TrainRun {
         this.model = model;
     }
 
-    public List<Vector> getModelVoice() {
-        return modelVoice;
+    public List<Vector> getVectors() {
+        return vectors;
     }
 
-    public void setModelVoice(List<Vector> modelVoice) {
-        this.modelVoice = modelVoice;
+    public void setVectors(List<Vector> vectors) {
+        this.vectors = vectors;
     }
 
     public List<TrainLog> getTrainLogs() {
