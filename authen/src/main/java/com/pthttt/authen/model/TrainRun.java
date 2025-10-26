@@ -6,7 +6,7 @@ import java.util.List;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "train_runs")
+@Table(name = "train_run")
 public class TrainRun {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -14,6 +14,7 @@ public class TrainRun {
     private int version;
     private String status; 
     private String filePath;
+    private String type;
     private LocalDateTime startedAt;
     private LocalDateTime finishedAt;
 
@@ -25,13 +26,16 @@ public class TrainRun {
     private Score score;
 
     @OneToMany(mappedBy = "trainRun")
-    private List<ModelVoice> modelVoice;
+    private List<Vector> modelVoice;
 
     @OneToMany(mappedBy = "trainRun")
     private List<TrainLog> trainLogs;
 
     @OneToMany(mappedBy = "trainRun")
     private List<Hyperparameter> hyperparameters;
+
+    @OneToOne(mappedBy = "trainRun")
+    private Score score;
 
     public TrainRun() {
     }
@@ -97,11 +101,11 @@ public class TrainRun {
         this.model = model;
     }
 
-    public List<ModelVoice> getModelVoice() {
+    public List<Vector> getModelVoice() {
         return modelVoice;
     }
 
-    public void setModelVoice(List<ModelVoice> modelVoice) {
+    public void setModelVoice(List<Vector> modelVoice) {
         this.modelVoice = modelVoice;
     }
 
@@ -121,4 +125,16 @@ public class TrainRun {
         this.hyperparameters = hyperparameters;
     }
     
+    public Score getScore() {
+        return score;
+    }
+    public void setScore(Score score) {
+        this.score = score;
+    }
+    public String getType() {
+        return type;
+    }
+    public void setType(String type) {
+        this.type = type;
+    }
 }

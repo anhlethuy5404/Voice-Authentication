@@ -1,5 +1,7 @@
 package com.pthttt.authen.model;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -10,7 +12,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "auth_logs")
+@Table(name = "auth_log")
 public class AuthLog {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,10 +22,13 @@ public class AuthLog {
     private String result;
     @Column(name = "`rank`")
     private int rank;
+    private int userMatch;
+    private String checkType;
+    private LocalDateTime createdAt;
 
     @ManyToOne
     @JoinColumn(name = "modelVoice_id")
-    private ModelVoice modelVoice;
+    private Vector modelVoice;
 
     public AuthLog() {
     }
@@ -67,10 +72,28 @@ public class AuthLog {
     public void setRank(int rank) {
         this.rank = rank;
     }
-    public ModelVoice getModelVoice() {
+    public Vector getModelVoice() {
         return modelVoice;
     }
-    public void setModelVoice(ModelVoice modelVoice) {
+    public void setModelVoice(Vector modelVoice) {
         this.modelVoice = modelVoice;
+    }
+    public int getUserMatch() {
+        return userMatch;
+    }
+    public void setUserMatch(int userMatch) {
+        this.userMatch = userMatch;
+    }
+    public String getCheckType() {
+        return checkType;
+    }
+    public void setCheckType(String checkType) {
+        this.checkType = checkType;
+    }
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 }

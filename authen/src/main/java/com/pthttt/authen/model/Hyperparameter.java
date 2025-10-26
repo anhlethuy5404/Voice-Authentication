@@ -11,7 +11,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "hyperparameters")
+@Table(name = "hyperparameter")
 public class Hyperparameter {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

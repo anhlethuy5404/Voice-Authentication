@@ -1,20 +1,19 @@
 package com.pthttt.authen.controller;
 
-import com.pthttt.authen.model.User;
-import com.pthttt.authen.repository.UserRepository;
-import com.pthttt.authen.service.UserService;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
-@Controller
-@RequiredArgsConstructor
-public class LoginController {
+import com.pthttt.authen.model.User;
+import com.pthttt.authen.service.UserService;
 
-    private final UserService userService;
+@Controller
+public class LoginController {
+    @Autowired
+    private UserService userService;
 
     @GetMapping("/login")
     public String login() {
