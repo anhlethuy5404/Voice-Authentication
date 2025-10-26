@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lịch sử kiểm tra giọng nói</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Poppins", sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #74b9ff, #a29bfe);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 40px 20px;
+        }
+
+        h2 {
+            color: #2d3436;
+            font-size: 28px;
+            margin-bottom: 25px;
+        }
+
+        .table-container {
+            background: #fff;
+            padding: 25px 30px;
+            border-radius: 16px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            width: 90%;
+            max-width: 1000px;
+            animation: fadeIn 0.6s ease;
+            overflow-x: auto;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #dfe6e9;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f1f2f6;
+            color: #2d3436;
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background-color: #f8f9fa;
+            transition: 0.2s;
+        }
+
+        .tag {
+            padding: 6px 10px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 13px;
+        }
+
+        .detect {
+            background-color: rgba(0, 184, 148, 0.15);
+            color: #00b894;
+        }
+
+        .identify {
+            background-color: rgba(116, 185, 255, 0.15);
+            color: #0984e3;
+        }
+
+        .real {
+            color: #00b894;
+            font-weight: bold;
+        }
+
+        .fake {
+            color: #d63031;
+            font-weight: bold;
+        }
+
+        .back-btn {
+            margin-top: 20px;
+            display: inline-block;
+            padding: 12px 22px;
+            background: linear-gradient(135deg, #0984e3, #74b9ff);
+            color: white;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+<h2>Lịch sử kiểm tra giọng nói</h2>
+
+<div class="table-container">
+    <table>
+        <thead>
+        <tr>
+            <th>Loại kiểm tra</th>
+            <th>Kết quả</th>
+            <th>Người trùng khớp</th>
+            <th>Độ tương đồng</th>
+            <th>Model</th>
+            <th>Version</th>
+            <th>Thời gian</th>
+            <th>File</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="h : ${histories}">
+            <!-- Loại kiểm tra -->
+            <td>
+                <span th:classappend="${h.checkType == 'REAL_VOICE_DETECT'} ? 'tag detect' : 'tag identify'"
+                      th:text="${h.checkType == 'REAL_VOICE_DETECT' ? 'REAL VOICE DETECT' : 'SPEAKER IDENTIFY'}">
+                </span>
+            </td>
+
+            <!-- Kết quả -->
+            <td th:if="${h.checkType == 'REAL_VOICE_DETECT'}">
+                <span th:classappend="${h.isRealVoice == 'true'} ? 'real' : 'fake'"
+                      th:text="${h.isRealVoice == 'true' ? 'Giọng thật' : 'Giọng giả mạo'}"></span>
+            </td>
+            <td th:if="${h.checkType == 'SPEAKER_IDENTIFY'}" colspan="1">
+                <span th:text="${h.userMatch != null ? 'Giọng trùng người dùng ' + h.userMatch : 'Không trùng'}"></span>
+            </td>
+
+            <!-- Người trùng khớp -->
+            <td th:text="${h.userMatch != null ? h.userMatch : '-'}"></td>
+
+            <!-- Độ tương đồng -->
+            <td th:text="${#numbers.formatDecimal(h.similarity * 100, 2, 2)} + '%'"></td>
+
+            <!-- Model -->
+            <td th:text="${h.modelName}"></td>
+
+            <!-- Version -->
+            <td th:text="${h.version}"></td>
+
+            <!-- Thời gian -->
+            <td th:text="${#temporals.format(h.createdAt, 'yyyy-MM-dd HH:mm:ss')}"></td>
+
+            <!-- File -->
+            <td>
+                <a th:href="@{'/uploads/' + ${h.filePath}}" target="_blank">Xem file</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<a href="/home" class="back-btn">⬅ Quay lại trang chủ</a>
+
+</body>
+</html>

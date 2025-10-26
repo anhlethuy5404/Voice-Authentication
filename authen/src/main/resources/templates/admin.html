@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Train Model - Admin Panel</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+</head>
+
+<body class="bg-light">
+
+    <div class="container py-5">
+        <!-- Header -->
+        <div class="text-center mb-4">
+            <h1 class="display-4 fw-bold"><i class="bi bi-cpu"></i> Train Model</h1>
+            <p class="lead">Configure and start your model training process</p>
+        </div>
+
+        <!-- Form Card -->
+        <div class="card shadow-lg">
+            <div class="card-body p-4">
+                <form th:action="@{/admin/train}" method="post" id="trainForm">
+
+                    <!-- Model Configuration Section -->
+                    <div class="border-bottom border-3 border-primary pb-2 mb-4">
+                        <h4 class="text-primary fw-bold"><i class="bi bi-gear-fill"></i> Model Configuration</h4>
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-md-6 mb-3">
+                            <label for="model_name" class="form-label">Model Name</label>
+                            <select id="model_name" name="model_name" class="form-select" required>
+                                <option value="" disabled selected>-- Select Model --</option>
+                                <option th:each="m : ${models}" th:value="${m.name}" th:attr="data-id=${m.id}"
+                                    th:text="${m.name}">
+                                </option>
+                            </select>
+                            <input type="hidden" id="model_id" name="model_id" />
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="model_type" class="form-label">Model Type</label>
+                            <select id="model_type" name="model_type" class="form-select" required>
+                                <option value="embedding">Embedding</option>
+                                <option value="deepfake">Deepfake</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Training Parameters Section -->
+                    <div class="border-bottom border-3 border-primary pb-2 mb-4">
+                        <h4 class="text-primary fw-bold"><i class="bi bi-sliders"></i> Training Parameters</h4>
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-md-4 mb-3">
+                            <label for="num_epochs" class="form-label">Number of Epochs</label>
+                            <input type="number" id="num_epochs" name="num_epochs" class="form-control" value="5"
+                                min="1" required>
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label for="batch_size" class="form-label">Batch Size</label>
+                            <input type="number" id="batch_size" name="batch_size" class="form-control" value="4"
+                                min="1" required>
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label for="num_workers" class="form-label">Num Workers</label>
+                            <input type="number" id="num_workers" name="num_workers" class="form-control" value="0"
+                                min="0" required>
+                        </div>
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-md-6 mb-3">
+                            <label for="learning_rate" class="form-label">Learning Rate</label>
+                            <input type="number" step="0.0001" id="learning_rate" name="learning_rate"
+                                class="form-control" value="0.01" min="0" required>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="patience" class="form-label">Patience</label>
+                            <input type="number" id="patience" name="patience" class="form-control" value="3" min="0"
+                                required>
+                        </div>
+                    </div>
+
+                    <!-- Data Split Section -->
+                    <div class="border-bottom border-3 border-primary pb-2 mb-3">
+                        <h4 class="text-primary fw-bold"><i class="bi bi-pie-chart-fill"></i> Data Split</h4>
+                    </div>
+
+                    <div class="alert alert-info d-flex align-items-center mb-4" role="alert">
+                        <i class="bi bi-info-circle-fill me-2"></i>
+                        <div>The total percentage must equal 100%</div>
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label fw-bold">Train Split (%)</label>
+                            <input type="number" name="split_train" class="form-control" value="70" min="0" max="100"
+                                required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label fw-bold">Validation Split (%)</label>
+                            <input type="number" name="split_val" class="form-control" value="15" min="0" max="100"
+                                required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label fw-bold">Test Split (%)</label>
+                            <input type="number" name="split_test" class="form-control" value="15" min="0" max="100"
+                                required>
+                        </div>
+                    </div>
+
+                    <!-- Voice Selection Section -->
+                    <div class="border-bottom border-3 border-primary pb-2 mb-3">
+                        <h4 class="text-primary fw-bold"><i class="bi bi-mic-fill"></i> Select Voice Samples</h4>
+                    </div>
+
+                    <div class="bg-light rounded p-3">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="fw-bold text-primary fs-5">Selected: <span id="selectedCount">0</span></span>
+                            <button type="button" class="btn btn-primary btn-sm" onclick="toggleSelectAll()">
+                                <i class="bi bi-check-all"></i> Select All
+                            </button>
+                        </div>
+
+                        <div style="max-height: 400px; overflow-y: auto;">
+                            <table class="table table-hover table-striped">
+                                <thead class="table-primary sticky-top">
+                                    <tr>
+                                        <th style="width: 10%">Select</th>
+                                        <th style="width: 20%">User ID</th>
+                                        <th style="width: 70%">Voice File</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="v : ${voices}">
+                                        <td class="text-center">
+                                            <input type="checkbox" class="form-check-input" name="selectedVoices"
+                                                th:value="${v.user.id + '::' + v.filePath}"
+                                                onchange="updateSelectedCount()" />
+                                        </td>
+                                        <td>
+                                            <strong th:text="${v.user.id}">User ID</strong>
+                                        </td>
+                                        <td>
+                                            <a th:href="@{'/uploads/' + ${v.filePath}}" target="_blank"
+                                                th:text="${v.filePath}" class="text-decoration-none">
+                                                Voice File
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="btn btn-primary btn-lg w-100 mt-4">
+                        <i class="bi bi-play-circle-fill"></i> Start Training
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // Model selection handler
+        const modelSelect = document.getElementById("model_name");
+        const modelIdInput = document.getElementById("model_id");
+
+        modelSelect.addEventListener("change", function () {
+            const selected = this.options[this.selectedIndex];
+            modelIdInput.value = selected.getAttribute("data-id") || "";
+        });
+
+        // Select all voices
+        function toggleSelectAll() {
+            const checkboxes = document.querySelectorAll('.form-check-input[name="selectedVoices"]');
+            const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = !allChecked;
+            });
+
+            updateSelectedCount();
+        }
+
+        // Update selected count
+        function updateSelectedCount() {
+            const checked = document.querySelectorAll('.form-check-input[name="selectedVoices"]:checked').length;
+            document.getElementById('selectedCount').textContent = checked;
+        }
+
+        // Form validation
+        document.getElementById('trainForm').addEventListener('submit', function (e) {
+            const splitTrain = parseInt(document.querySelector('[name="split_train"]').value);
+            const splitVal = parseInt(document.querySelector('[name="split_val"]').value);
+            const splitTest = parseInt(document.querySelector('[name="split_test"]').value);
+
+            if (splitTrain + splitVal + splitTest !== 100) {
+                e.preventDefault();
+                alert('⚠️ Data split percentages must total 100%!');
+                return false;
+            }
+
+            const selectedVoices = document.querySelectorAll('.form-check-input[name="selectedVoices"]:checked').length;
+            if (selectedVoices === 0) {
+                e.preventDefault();
+                alert('⚠️ Please select at least one voice sample!');
+                return false;
+            }
+
+            return true;
+        });
+
+        // Initialize selected count
+        window.addEventListener('load', function () {
+            updateSelectedCount();
+        });
+    </script>
+
+</body>
+
+</html>
