@@ -1,89 +1,87 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lưu trữ Giọng nói</title>
-    <link
-            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-            rel="stylesheet"
-    >
+    <title>Voice Verification</title>
     <style>
-        body {
-            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        .container {
-            max-width: 600px;
-            background: white;
-            padding: 30px 40px;
-            margin-top: 30px;
-            border-radius: 16px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-        }
-        h2 {
-            text-align: center;
-            color: #0d47a1;
-            margin-bottom: 25px;
-        }
-        label {
-            font-weight: 600;
-            color: #1565c0;
-        }
-        button {
-            background-color: #1565c0;
-            border: none;
-            padding: 10px 25px;
-            border-radius: 8px;
-            color: white;
-            font-weight: 600;
-            transition: 0.3s;
-        }
-        button:hover {
-            background-color: #0d47a1;
-        }
-        .error-box {
-            margin-top: 25px;
-            border-radius: 10px;
-            padding: 20px;
-            background-color: #ffebee;
-            border: 1px solid #e57373;
-        }
+        body { font-family: sans-serif; margin: 2em; }
+        .container { max-width: 600px; margin: auto; padding: 2em; border: 1px solid #ccc; border-radius: 5px; }
+        .form-group { margin-bottom: 1em; }
+        label { display: block; margin-bottom: .5em; }
+        select, input[type="file"], button { width: 100%; padding: .5em; }
+        .result { margin-top: 1.5em; padding: 1em; border-radius: 5px; }
+        .result.success { background-color: #e7f4e7; border: 1px solid #8fbc8f; }
+        .result.error { background-color: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; }
+        .result.info { background-color: #e2e3e5; border: 1px solid #d6d8db; }
     </style>
 </head>
-
 <body>
+
 <div class="container">
-    <h2>🧠 Lưu trữ Giọng nói (Save Voice Embedding)</h2>
+    <h2>Voice Verification</h2>
 
-    <form th:action="@{/verification/embedding}" method="post" enctype="multipart/form-data">
-        <div class="mb-3">
-            <label for="audioFile" class="form-label">🎤 Chọn file audio:</label>
-            <input type="file" id="audioFile" name="audioFile" accept="audio/*" class="form-control" required>
+    <form th:action="@{/verification}" method="post" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="modelId">Select Model:</label>
+            <select id="modelId" name="modelId" required>
+                <option value="">-- Select a Model --</option>
+                <option th:each="model : ${models}" th:value="${model.id}" th:text="${model.name}"></option>
+            </select>
         </div>
 
-        <div class="mb-3">
-            <label for="modelName" class="form-label">🧩 Model name:</label>
-            <input type="text" id="modelName" name="modelName" value="wavlm" class="form-control">
+        <div class="form-group">
+            <label for="trainRunId">Select Version (Train Run):</label>
+            <select id="trainRunId" name="trainRunId" required>
+                <option value="">-- Select a Version --</option>
+            </select>
         </div>
 
-        <div class="mb-4">
-            <label for="ckptPath" class="form-label">📁 Checkpoint path:</label>
-            <input type="text" id="ckptPath" name="ckptPath" value="/models/wavlm_best.pt" class="form-control">
+        <div class="form-group">
+            <label for="audioFile">Upload Audio File (.wav):</label>
+            <input type="file" id="audioFile" name="audioFile" accept=".wav" required>
         </div>
 
-        <div class="text-center">
-            <button type="submit">🚀 Lưu trữ ngay</button>
-        </div>
+        <button type="submit">Verify</button>
     </form>
 
-    <!-- Hiển thị lỗi -->
-    <div th:if="${error != null}" class="error-box mt-4">
-        <h5 class="text-danger">⚠️ Lỗi xảy ra:</h5>
+    Display Result
+    <div th:if="${resultUser}" class="result success">
+        <h4>Verification Successful!</h4>
+        <p>Verified User: <strong th:text="${resultUser.username}"></strong></p>
+    </div>
+
+    <div th:if="${resultMessage}" class="result info">
+        <p th:text="${resultMessage}"></p>
+    </div>
+
+    <div th:if="${error}" class="result error">
+        <h4>Error</h4>
         <p th:text="${error}"></p>
     </div>
+
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script th:inline="javascript">
+    // Biến lưu trữ dữ liệu là trainRunsData
+    const trainRunsData = /*[[${trainRuns}]]*/ [];
+    const modelSelect = document.getElementById('modelId');
+    const trainRunSelect = document.getElementById('trainRunId');
+
+    modelSelect.addEventListener('change', function() {
+        const selectedModelId = Number(this.value);
+        trainRunSelect.innerHTML = '<option value="">-- Select a Version --</option>'; // Reset
+
+        if (selectedModelId) {
+            const filteredTrainRuns = trainRunsData.filter(run => run.modelId === selectedModelId);
+            filteredTrainRuns.forEach(run => {
+                const option = document.createElement('option');
+                option.value = run.id;
+                option.textContent = `ID: ${run.id} - Version: ${run.version}`;
+                trainRunSelect.appendChild(option);
+            });
+        }
+    });
+</script>
+
 </body>
 </html>

@@ -76,6 +76,46 @@ public class MachineLearningService {
         return buffer.array();
     }
 
+    public float[] getEmbeddingForVerification(MultipartFile audioFile, String modelName, String ckptPath) throws Exception {
+        File tempFile = File.createTempFile("voice_verif_", ".wav");
+        audioFile.transferTo(tempFile);
+
+        RestTemplate restTemplate = new RestTemplate();
+        String url = aiServerUrl + "/voice/register_voice/";
+
+        Map<String, Object> request = new HashMap<>();
+        request.put("model_name", modelName);
+        request.put("ckpt_path", ckptPath);
+        request.put("file_path", tempFile.getAbsolutePath());
+        request.put("num_classes", 100);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(request, headers);
+
+        ResponseEntity<Map> response = restTemplate.exchange(url, HttpMethod.POST, entity, Map.class);
+
+        tempFile.delete();
+
+        if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
+            List<List<Double>> embeddings = (List<List<Double>>) response.getBody().get("embeddings");
+
+            if (embeddings != null && !embeddings.isEmpty()) {
+                List<Double> embedding = embeddings.get(0);
+                float[] floatArray = new float[embedding.size()];
+                for (int i = 0; i < embedding.size(); i++) {
+                    floatArray[i] = embedding.get(i).floatValue();
+                }
+                return floatArray;
+            } else {
+                throw new Exception("Không nhận được embedding nào từ server AI.");
+            }
+        } else {
+            throw new Exception("Lỗi từ server AI: " + response.getStatusCode() + " - " + response.getBody());
+        }
+    }
+
     public byte[] getEmbeddingByFilePath(String filePath, String modelName, String ckptPath) throws Exception {
         RestTemplate restTemplate = new RestTemplate();
         String url = aiServerUrl + "/voice/register_voice/";
