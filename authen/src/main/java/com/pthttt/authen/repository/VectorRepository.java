@@ -10,4 +10,5 @@ import com.pthttt.authen.model.Vector;
 @Repository
 public interface VectorRepository extends JpaRepository<Vector, Integer> {
     List<Vector> findByTrainRunId(Integer trainRunId);
+    List<Vector> findByVoiceId(Integer voiceId);
 }

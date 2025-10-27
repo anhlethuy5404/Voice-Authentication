@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface AuthLogRepository extends JpaRepository<AuthLog, Integer> {
-    List<AuthLog> findByModelVoiceId(int voiceId);
+    List<AuthLog> findByVectorId(int vectorId);
 }

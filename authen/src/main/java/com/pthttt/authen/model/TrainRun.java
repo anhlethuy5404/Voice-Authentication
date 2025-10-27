@@ -34,9 +34,6 @@ public class TrainRun {
     @OneToMany(mappedBy = "trainRun")
     private List<Hyperparameter> hyperparameters;
 
-    @OneToOne(mappedBy = "trainRun")
-    private Score score;
-
     public TrainRun() {
     }
 

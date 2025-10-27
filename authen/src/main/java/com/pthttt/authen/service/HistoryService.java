@@ -23,22 +23,22 @@ public class HistoryService {
     private AuthLogRepository authLogRepository;
 
     @Autowired
-    private ModelVoiceRepository modelVoiceRepository;
+    private VectorRepository vectorRepository;
 
     public List<Voice> getVoicesByUserId(int userId) {
         return voiceRepository.findByUserId(userId);
     }
 
-    public List<ModelVoice> getModelVoicesByVoiceId(int voiceId) {
-        return modelVoiceRepository.getByVoiceId(voiceId);
+    public List<Vector> getVectorByVoiceId(int voiceId) {
+        return vectorRepository.findByVoiceId(voiceId);
     }
 
-    public List<AuthLog> getAuthLogsByModelVoiceId(int modelVoiceId) {
-        return authLogRepository.findByModelVoiceId(modelVoiceId);
+    public List<AuthLog> getAuthLogsByVectorId(int vectorId) {
+        return authLogRepository.findByVectorId(vectorId);
     }
 
-    public TrainRun getTrainRunByModelVoiceId(int modelVoiceId) {
-        return trainRunRepository.findByModelVoiceId(modelVoiceId);
+    public TrainRun getTrainRunByVectorId(int vectorId) {
+        return trainRunRepository.findByVectorId(vectorId);
     }
 
     public Model getModelByTrainRunId(int trainRunId) {
@@ -51,11 +51,11 @@ public class HistoryService {
         List<Voice> voices = getVoicesByUserId(userId);
 
         for (Voice voice : voices) {
-            var modelVoices = getModelVoicesByVoiceId(voice.getId());
+            var vectors = getVectorByVoiceId(voice.getId());
 
-            for (ModelVoice modelVoice : modelVoices) {
-                var authLogs = getAuthLogsByModelVoiceId(modelVoice.getId());
-                var trainRun = getTrainRunByModelVoiceId(modelVoice.getId());
+            for (Vector vector : vectors) {
+                var authLogs = getAuthLogsByVectorId(vector.getId());
+                var trainRun = getTrainRunByVectorId(vector.getId());
                 var model = getModelByTrainRunId(trainRun.getId());
 
                 for (AuthLog authLog : authLogs) {
