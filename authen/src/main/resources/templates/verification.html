@@ -13,7 +13,7 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #6e4ba2 100%);
+            background: linear-gradient(135deg, #c1c8ea 0%, #cbb9e6 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -86,7 +86,7 @@
 
         button {
             padding: 12px 24px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #90a3f9;
             color: white;
             border: none;
             border-radius: 8px;
@@ -198,12 +198,12 @@
         </div>
 
         <div th:if="${scores != null and not #lists.isEmpty(scores)}">
-            <h4>Verification Results:</h4>
+            <h4>Results:</h4>
             <table>
                 <thead>
                     <tr>
                         <th>Username</th>
-                        <th>Score</th>
+                        <th>Similarity</th>
                     </tr>
                 </thead>
                 <tbody>

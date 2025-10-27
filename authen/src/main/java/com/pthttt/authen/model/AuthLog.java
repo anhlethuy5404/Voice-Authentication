@@ -41,12 +41,13 @@ public class AuthLog {
         this.checkType = checkType;
         this.createdAt = createdAt;
     }
-    public AuthLog(float similarity, String result, int rank, int userMatch, String checkType, LocalDateTime createdAt) {
+    public AuthLog(float similarity, String result, int rank, int userMatch, String checkType, LocalDateTime createdAt, Vector vector) {
         this.similarity = similarity;
         this.rank = rank;
         this.userMatch = userMatch;
         this.checkType = checkType;
         this.createdAt = createdAt;
+        this.vector = vector;
     }
 
     public int getId() {

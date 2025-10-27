@@ -74,6 +74,7 @@ public class VerificationService {
             authLog.setSimilarity(entry.getValue().floatValue());
             authLog.setUserMatch(entry.getKey().getVoice().getUser().getId());
             authLog.setCheckType("embedding");
+            authLog.setVector(entry.getKey());
             savedLogs.add(authLogRepository.save(authLog));
         }
 
