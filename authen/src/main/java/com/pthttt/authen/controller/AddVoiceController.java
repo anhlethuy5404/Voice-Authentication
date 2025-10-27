@@ -23,7 +23,7 @@ public class AddVoiceController {
 
     @GetMapping("/add-voice-form")
     public String showAddVoiceForm() {
-        return "addvoice";
+        return "userAddvoice";
     }
 
     @PostMapping("/upload-voice")

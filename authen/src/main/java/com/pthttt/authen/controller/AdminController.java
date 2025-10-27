@@ -19,6 +19,11 @@ public class AdminController {
         this.adminService = adminService;
     }
 
+    @GetMapping("")
+    public String adminHome() {
+        return "adminHome";
+    }
+
     @GetMapping("/setup")
     public String getModelAndData(org.springframework.ui.Model model) {
         List<Voice> voices = adminService.findAllVoices();
@@ -26,6 +31,6 @@ public class AdminController {
 
         model.addAttribute("voices", voices);
         model.addAttribute("models", models);
-        return "admin";
+        return "adminSetup";
     }
 }

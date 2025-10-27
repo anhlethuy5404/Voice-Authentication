@@ -66,7 +66,7 @@ public class AddEmbeddingController {
         model.addAttribute("models", modelRepository.findAll());
         model.addAttribute("trainRuns", trainRunData);
 
-        return "addembedding";
+        return "adminAddembedding";
     }
 
     @PostMapping("/add-embedding")

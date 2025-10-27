@@ -22,7 +22,7 @@ public class LoginController {
 
     @GetMapping("/home")
     public String home() {
-        return "home";
+        return "userHome";
     }
 
     @GetMapping("/signup")
@@ -40,6 +40,6 @@ public class LoginController {
 
     @GetMapping("")
     public String homePage() {
-        return "home";
+        return "login";
     }
 }
