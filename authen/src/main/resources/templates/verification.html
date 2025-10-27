@@ -1,89 +1,252 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lưu trữ Giọng nói</title>
-    <link
-            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-            rel="stylesheet"
-    >
+    <title>Voice Verification</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        .container {
-            max-width: 600px;
-            background: white;
-            padding: 30px 40px;
-            margin-top: 30px;
-            border-radius: 16px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-        }
-        h2 {
-            text-align: center;
-            color: #0d47a1;
-            margin-bottom: 25px;
-        }
-        label {
-            font-weight: 600;
-            color: #1565c0;
-        }
-        button {
-            background-color: #1565c0;
-            border: none;
-            padding: 10px 25px;
-            border-radius: 8px;
-            color: white;
-            font-weight: 600;
-            transition: 0.3s;
-        }
-        button:hover {
-            background-color: #0d47a1;
-        }
-        .error-box {
-            margin-top: 25px;
-            border-radius: 10px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #6e4ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             padding: 20px;
-            background-color: #ffebee;
-            border: 1px solid #e57373;
+        }
+
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h2 {
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 28px;
+            text-align: center;
+        }
+
+        h4 {
+            color: #333;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        label {
+            color: #555;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        select,
+        input[type="file"] {
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        select:hover,
+        input[type="file"]:hover {
+            border-color: #667eea;
+        }
+
+        select:focus,
+        input[type="file"]:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        button {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        thead {
+            background: #f5f5f5;
+        }
+
+        th {
+            padding: 12px;
+            text-align: left;
+            color: #333;
+            font-weight: 600;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #e0e0e0;
+            color: #555;
+        }
+
+        tr:hover {
+            background: #f9f9f9;
+        }
+
+        .result {
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-size: 14px;
+        }
+
+        .result.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .result.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .result.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .result p {
+            margin: 0;
         }
     </style>
 </head>
 
 <body>
-<div class="container">
-    <h2>🧠 Lưu trữ Giọng nói (Save Voice Embedding)</h2>
 
-    <form th:action="@{/verification/embedding}" method="post" enctype="multipart/form-data">
-        <div class="mb-3">
-            <label for="audioFile" class="form-label">🎤 Chọn file audio:</label>
-            <input type="file" id="audioFile" name="audioFile" accept="audio/*" class="form-control" required>
+    <div class="container">
+        <h2>Voice Verification</h2>
+
+        <div>
+            <form th:action="@{/verification}" method="post" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="modelId">Select Model:</label>
+                    <select id="modelId" name="modelId" required>
+                        <option value="">-- Select a Model --</option>
+                        <option th:each="model : ${models}" th:value="${model.id}" th:text="${model.name}"
+                            th:selected="${selectedModelId != null && selectedModelId == model.id}"></option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="trainRunId">Select Version (Train Run):</label>
+                    <select id="trainRunId" name="trainRunId" required>
+                        <option value="">-- Select a Version --</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="audioFile">Upload Audio File (.wav):</label>
+                    <input type="file" id="audioFile" name="audioFile" accept=".wav" required>
+                </div>
+
+                <button type="submit">Verify</button>
+            </form>
         </div>
 
-        <div class="mb-3">
-            <label for="modelName" class="form-label">🧩 Model name:</label>
-            <input type="text" id="modelName" name="modelName" value="wavlm" class="form-control">
+        <div th:if="${scores != null and not #lists.isEmpty(scores)}">
+            <h4>Verification Results:</h4>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Score</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="score, iterStat : ${scores}"
+                        th:class="${iterStat.index == 0} ? 'result success' : 'result info'">
+                        <td th:text="${score.username}"></td>
+                        <td th:text="${#numbers.formatDecimal(score.score, 1, 4)}"></td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
 
-        <div class="mb-4">
-            <label for="ckptPath" class="form-label">📁 Checkpoint path:</label>
-            <input type="text" id="ckptPath" name="ckptPath" value="/models/wavlm_best.pt" class="form-control">
+        <div th:if="${resultMessage}" class="result info">
+            <p th:text="${resultMessage}"></p>
         </div>
 
-        <div class="text-center">
-            <button type="submit">🚀 Lưu trữ ngay</button>
+        <div th:if="${error}" class="result error">
+            <p th:text="${error}"></p>
         </div>
-    </form>
 
-    <!-- Hiển thị lỗi -->
-    <div th:if="${error != null}" class="error-box mt-4">
-        <h5 class="text-danger">⚠️ Lỗi xảy ra:</h5>
-        <p th:text="${error}"></p>
     </div>
-</div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:inline="javascript">
+        const trainRunsData = /*[[${trainRuns}]]*/[];
+        const modelSelect = document.getElementById('modelId');
+        const trainRunSelect = document.getElementById('trainRunId');
+
+        modelSelect.addEventListener('change', function () {
+            const selectedModelId = Number(this.value);
+            trainRunSelect.innerHTML = '<option value="">-- Select a Version --</option>'; // Reset
+
+            if (selectedModelId) {
+                const filteredTrainRuns = trainRunsData.filter(run => run.modelId === selectedModelId);
+                filteredTrainRuns.forEach(run => {
+                    const option = document.createElement('option');
+                    option.value = run.id;
+                    option.textContent = `ID: ${run.id} - Version: ${run.version}`;
+                    trainRunSelect.appendChild(option);
+                });
+            }
+        });
+    </script>
+
 </body>
+
 </html>

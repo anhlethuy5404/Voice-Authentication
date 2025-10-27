@@ -32,7 +32,7 @@ public class Voice {
     private User user;
 
     @OneToMany(mappedBy = "voice")
-    private List<Vector> modelVoices;
+    private List<Vector> vectors;
 
     public Voice() {
     }
@@ -74,11 +74,12 @@ public class Voice {
         this.user = user;
     }
 
-    public List<Vector> getModelVoices() {
-        return modelVoices;
+    public List<Vector> getVectors() {
+        return vectors;
     }
-    public void setModelVoices(List<Vector> modelVoices) {
-        this.modelVoices = modelVoices;
+
+    public void setVectors(List<Vector> vectors) {
+        this.vectors = vectors;
     }
 
     public int getIsReal() {

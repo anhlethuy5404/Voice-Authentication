@@ -39,7 +39,7 @@ public class Vector {
     @JoinColumn(name = "trainRun_id")
     private TrainRun trainRun;
 
-    @OneToMany(mappedBy = "modelVoice")
+    @OneToMany(mappedBy = "vector")
     private List<AuthLog> authLogs;
 
     public Vector() {}

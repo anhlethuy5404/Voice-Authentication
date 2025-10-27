@@ -19,25 +19,36 @@ public class AuthLog {
     private int id;
     private String isRealVoice;
     private float similarity;
-    private String result;
     @Column(name = "`rank`")
     private int rank;
     private int userMatch;
-    private String checkType;
+    private String checkType; //deepfake / embedding
     private LocalDateTime createdAt;
 
     @ManyToOne
-    @JoinColumn(name = "modelVoice_id")
-    private Vector modelVoice;
+    @JoinColumn(name = "vector_id")
+    private Vector vector;
 
     public AuthLog() {
     }
-    public AuthLog(String isRealVoice, float similarity, String result, int rank) {
+    public AuthLog(int id, String isRealVoice, float similarity, String result, int rank, int userMatch,
+            String checkType, LocalDateTime createdAt) {
+        this.id = id;
         this.isRealVoice = isRealVoice;
         this.similarity = similarity;
-        this.result = result;
         this.rank = rank;
+        this.userMatch = userMatch;
+        this.checkType = checkType;
+        this.createdAt = createdAt;
     }
+    public AuthLog(float similarity, String result, int rank, int userMatch, String checkType, LocalDateTime createdAt) {
+        this.similarity = similarity;
+        this.rank = rank;
+        this.userMatch = userMatch;
+        this.checkType = checkType;
+        this.createdAt = createdAt;
+    }
+
     public int getId() {
         return id;
     }
@@ -60,23 +71,17 @@ public class AuthLog {
     public void setSimilarity(float similarity) {
         this.similarity = similarity;
     }
-    public String getResult() {
-        return result;
-    }
-    public void setResult(String result) {
-        this.result = result;
-    }
     public int getRank() {
         return rank;
     }
     public void setRank(int rank) {
         this.rank = rank;
     }
-    public Vector getModelVoice() {
-        return modelVoice;
+    public Vector getVector() {
+        return vector;
     }
-    public void setModelVoice(Vector modelVoice) {
-        this.modelVoice = modelVoice;
+    public void setVector(Vector vector) {
+        this.vector = vector;
     }
     public int getUserMatch() {
         return userMatch;
