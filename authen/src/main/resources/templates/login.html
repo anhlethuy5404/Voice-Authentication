@@ -1,11 +1,10 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đăng nhập</title>
+    <title>Login</title>
     <style>
-        /* Reset mặc định */
         * {
             margin: 0;
             padding: 0;
@@ -38,8 +37,8 @@
 
         h2 {
             color: #2d3436;
-            font-size: 26px;
-            margin-bottom: 10px;
+            font-size: 24px;
+            margin-bottom: 15px;
         }
 
         p {
@@ -131,26 +130,27 @@
     </style>
 </head>
 <body>
-<div class="message success" th:if="${message!=null}">[[${message}]]</div>
-<div class="message error" th:if="${error!=null}">[[${error}]]</div>
+
+<div th:if="${error}" class="message error">Invalid username or password!</div>
+<div th:if="${message}" class="message success">[[${message}]]</div>
 
 <div class="form-container">
-    <h2>Hệ thống hỗ trợ phát hiện giọng nói giả mạo</h2>
-    <p>Đăng nhập</p>
+    <h2>Deepfake Voice Detection System</h2>
 
     <form th:action="@{/login}" method="post">
-        <label for="username">Tên đăng nhập</label>
-        <input name="username" type="text" id="username" placeholder="Nhập tên đăng nhập" required>
+        <label for="username">Username</label>
+        <input name="username" type="text" id="username" placeholder="Enter your username" required>
 
-        <label for="password">Mật khẩu</label>
-        <input name="password" type="password" id="password" placeholder="Nhập mật khẩu" required>
+        <label for="password">Password</label>
+        <input name="password" type="password" id="password" placeholder="Enter your password" required>
 
-        <button type="submit">Đăng nhập</button>
+        <button type="submit">Login</button>
 
-        <p style="margin-top: 15px;">Chưa có tài khoản?
-            <a th:href="@{/signup}">Đăng ký ngay</a>
+        <p style="margin-top: 15px;">Don’t have an account?
+            <a th:href="@{/signup}">Sign up now</a>
         </p>
     </form>
 </div>
+
 </body>
 </html>

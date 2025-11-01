@@ -17,8 +17,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.pthttt.authen.model.AuthLog;
 import com.pthttt.authen.model.TrainRun;
 import com.pthttt.authen.model.User;
-import com.pthttt.authen.repository.ModelRepository;
-import com.pthttt.authen.repository.TrainRunRepository;
 import com.pthttt.authen.repository.UserRepository;
 import com.pthttt.authen.service.VerificationService;
 
@@ -29,18 +27,12 @@ public class VerificationController {
     private VerificationService verificationService;
 
     @Autowired
-    private ModelRepository modelRepository;
-
-    @Autowired
-    private TrainRunRepository trainRunRepository;
-
-    @Autowired
     private UserRepository userRepository;
 
     @GetMapping
     public String showVerificationForm(Model model) {
-        List<com.pthttt.authen.model.Model> models = modelRepository.findAll();
-        List<TrainRun> trainRuns = trainRunRepository.findAll();
+        List<com.pthttt.authen.model.Model> models = verificationService.getAvailableModel();
+        List<TrainRun> trainRuns = verificationService.getAvailableTrainRun();
         model.addAttribute("models", models);
         List<Map<String, Object>> trainRunData = trainRuns.stream()
             .map(run -> {
@@ -83,8 +75,8 @@ public class VerificationController {
         }
 
         model.addAttribute("selectedModelId", selectedModelId);
-        List<com.pthttt.authen.model.Model> models = modelRepository.findAll();
-        List<TrainRun> trainRuns = trainRunRepository.findAll();
+        List<com.pthttt.authen.model.Model> models = verificationService.getAvailableModel();
+        List<TrainRun> trainRuns = verificationService.getAvailableTrainRun();
         model.addAttribute("models", models);
         List<Map<String, Object>> trainRunData = trainRuns.stream()
             .map(run -> {

@@ -27,13 +27,13 @@ public class AddVoiceController {
     }
 
     @PostMapping("/upload-voice")
-    public String uploadVoice(@RequestParam("voiceFile") MultipartFile file, Principal principal, RedirectAttributes redirectAttributes) {
+    public String uploadVoice(@RequestParam("voiceFile") MultipartFile file, @RequestParam("isReal") Integer isReal, Principal principal, RedirectAttributes redirectAttributes) {
         if (principal == null) {
             return "redirect:/login";
         }
 
         try {
-            voiceService.saveVoice(file, principal.getName());
+            voiceService.saveVoice(file, principal.getName(), isReal);
             redirectAttributes.addFlashAttribute("message", "You successfully uploaded '" + file.getOriginalFilename() + "'!");
         } catch (IOException e) {
             e.printStackTrace();
