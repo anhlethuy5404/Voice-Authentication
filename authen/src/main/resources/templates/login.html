@@ -1,11 +1,10 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Đăng nhập</title>
     <style>
-        /* Reset mặc định */
         * {
             margin: 0;
             padding: 0;
@@ -38,8 +37,8 @@
 
         h2 {
             color: #2d3436;
-            font-size: 26px;
-            margin-bottom: 10px;
+            font-size: 24px;
+            margin-bottom: 15px;
         }
 
         p {
@@ -131,12 +130,12 @@
     </style>
 </head>
 <body>
-<div class="message success" th:if="${message!=null}">[[${message}]]</div>
-<div class="message error" th:if="${error!=null}">[[${error}]]</div>
+
+<div th:if="${error}" class="message error">Sai tên đăng nhập hoặc mật khẩu!</div>
+<div th:if="${message}" class="message success">[[${message}]]</div>
 
 <div class="form-container">
-    <h2>Xin chào 👋</h2>
-    <p>Đăng nhập để tiếp tục sử dụng hệ thống</p>
+    <h2>Hệ thống hỗ trợ phát hiện giọng nói giả mạo</h2>
 
     <form th:action="@{/login}" method="post">
         <label for="username">Tên đăng nhập</label>
@@ -152,5 +151,6 @@
         </p>
     </form>
 </div>
+
 </body>
 </html>

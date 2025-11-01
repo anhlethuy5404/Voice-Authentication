@@ -21,7 +21,7 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
             throws IOException, ServletException {
 
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-        String redirectUrl = "/home"; // mặc định
+        String redirectUrl = "/home";
 
         for (GrantedAuthority authority : authorities) {
             String role = authority.getAuthority();

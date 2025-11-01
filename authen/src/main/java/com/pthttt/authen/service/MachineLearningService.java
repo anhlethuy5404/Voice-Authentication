@@ -70,10 +70,10 @@ public class MachineLearningService {
                 }
                 return floatArray;
             } else {
-                throw new Exception("Không nhận được embedding nào từ server AI.");
+                throw new Exception("Receiving no embeddings from AI server.");
             }
         } else {
-            throw new Exception("Lỗi từ server AI: " + response.getStatusCode() + " - " + response.getBody());
+            throw new Exception("Error from server AI: " + response.getStatusCode() + " - " + response.getBody());
         }
     }
 
@@ -103,10 +103,10 @@ public class MachineLearningService {
                 List<Double> embedding = embeddings.get(0);
                 return convertEmbeddingToBytes(embedding);
             } else {
-                throw new Exception("Không nhận được embedding nào từ server AI." + filePath + " - "+  absolutePath);
+                throw new Exception("Receiving no embeddings from AI server.");
             }
         } else {
-            throw new Exception("Lỗi từ server AI: " + response.getStatusCode() + " - " + response.getBody());
+            throw new Exception("Error from server AI: " + response.getStatusCode() + " - " + response.getBody());
         }
     }
 }
