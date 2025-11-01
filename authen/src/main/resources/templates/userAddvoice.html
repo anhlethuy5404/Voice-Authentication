@@ -141,6 +141,24 @@
             color: #00acc1;
             text-decoration: underline;
         }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        label {
+            font-weight: 500;
+            color: #333;
+        }
+
+        select.form-control {
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+        }
     </style>
 </head>
 <body>
@@ -159,6 +177,14 @@
                 </label>
                 <input type="file" id="voiceFile" name="voiceFile" accept="audio/*" required />
                 <div class="file-name" id="fileName"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="isReal">Is this a real voice?</label>
+                <select id="isReal" name="isReal" class="form-control">
+                    <option value="1">Real</option>
+                    <option value="0">Fake</option>
+                </select>
             </div>
 
             <button type="submit">Upload</button>

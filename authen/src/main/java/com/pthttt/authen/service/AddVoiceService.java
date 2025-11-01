@@ -30,10 +30,10 @@ public class AddVoiceService {
     private final Path rootPath;
 
     public AddVoiceService() {
-        this.rootPath = Paths.get(new File("").getAbsolutePath());
+        this.rootPath = Paths.get(new File("").getAbsolutePath()).getParent();
     }
 
-    public void saveVoice(MultipartFile file, String username) throws IOException {
+    public void saveVoice(MultipartFile file, String username, Integer isReal) throws IOException {
         User user = userRepository.findByUsername(username);
         if (user == null) {
             throw new RuntimeException("User not found");
@@ -43,6 +43,7 @@ public class AddVoiceService {
         Voice voice = new Voice();
         voice.setUser(user);
         voice.setCreatedAt(new Date());
+        voice.setIsReal(isReal);
         Voice savedVoice = voiceRepository.save(voice);
 
         // Đặt tên file <id>.wav

@@ -81,7 +81,7 @@ public class MachineLearningService {
         RestTemplate restTemplate = new RestTemplate();
         String url = aiServerUrl + "/voice/register_voice/";
 
-        String absolutePath = new File(filePath).getAbsolutePath();
+        String absolutePath = new File("../" + filePath).getAbsolutePath();
 
         Map<String, Object> request = new HashMap<>();
         request.put("model_name", modelName);
@@ -103,7 +103,7 @@ public class MachineLearningService {
                 List<Double> embedding = embeddings.get(0);
                 return convertEmbeddingToBytes(embedding);
             } else {
-                throw new Exception("Không nhận được embedding nào từ server AI.");
+                throw new Exception("Không nhận được embedding nào từ server AI." + filePath + " - "+  absolutePath);
             }
         } else {
             throw new Exception("Lỗi từ server AI: " + response.getStatusCode() + " - " + response.getBody());

@@ -17,12 +17,16 @@ import com.pthttt.authen.model.AuthLog;
 import com.pthttt.authen.model.TrainRun;
 import com.pthttt.authen.model.Vector;
 import com.pthttt.authen.repository.AuthLogRepository;
+import com.pthttt.authen.repository.ModelRepository;
 import com.pthttt.authen.repository.TrainRunRepository;
 import com.pthttt.authen.repository.UserRepository;
 import com.pthttt.authen.repository.VectorRepository;
 
 @Service
 public class VerificationService {
+
+    @Autowired
+    private ModelRepository modelRepository;
 
     @Autowired
     private MachineLearningService machineLearningService;
@@ -39,6 +43,14 @@ public class VerificationService {
     @Autowired
     private AuthLogRepository authLogRepository;
 
+    public List<com.pthttt.authen.model.Model> getAvailableModel() {
+        return modelRepository.findAll();
+    }
+
+    public List<TrainRun> getAvailableTrainRun() {
+        return trainRunRepository.findAll();
+    }
+
     public List<AuthLog> verify(MultipartFile audioFile, Integer trainRunId) throws Exception {
         TrainRun trainRun = trainRunRepository.findById(trainRunId)
                 .orElseThrow(() -> new Exception("TrainRun not found with id: " + trainRunId));
@@ -53,7 +65,7 @@ public class VerificationService {
 
         Map<Vector, Double> record = new HashMap<>();
 
-        for (Vector vector : vectors) {
+        for (Vector vector : vectors) {            
             float[] existingEmbedding = toFloatArray(vector.getEmbeddingVector());
             normalize(existingEmbedding);
             double similarity = cosineSimilarity(newEmbedding, existingEmbedding);
@@ -74,6 +86,7 @@ public class VerificationService {
             authLog.setSimilarity(entry.getValue().floatValue());
             authLog.setUserMatch(entry.getKey().getVoice().getUser().getId());
             authLog.setCheckType("embedding");
+            authLog.setVector(entry.getKey());
             savedLogs.add(authLogRepository.save(authLog));
         }
 

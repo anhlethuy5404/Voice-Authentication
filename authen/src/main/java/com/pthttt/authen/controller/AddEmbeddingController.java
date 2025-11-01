@@ -7,7 +7,10 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.pthttt.authen.model.TrainRun;
@@ -42,6 +45,7 @@ public class AddEmbeddingController {
         List<Voice> voices = voiceRepository.findAll();
         List<TrainRun> trainRuns = trainRunRepository.findAll();
         List<Map<String, Object>> voiceData = voices.stream()
+            .filter(voice -> voice.getIsReal() == 1)
             .map(voice -> {
                 java.util.Map<String, Object> map = new HashMap<>();
                 map.put("id", voice.getId());
