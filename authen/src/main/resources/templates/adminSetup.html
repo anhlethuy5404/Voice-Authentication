@@ -138,14 +138,15 @@
                                     <tr>
                                         <th style="width: 10%">Select</th>
                                         <th style="width: 20%">User ID</th>
-                                        <th style="width: 70%">Voice File</th>
+                                        <th style="width: 60%">Voice File</th>
+                                        <th style="width: 10%">Real Voice</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr th:each="v : ${voices}">
                                         <td class="text-center">
                                             <input type="checkbox" class="form-check-input" name="selectedVoices"
-                                                th:value="${v.user.id + '::' + v.filePath}"
+                                                th:value="${v.user.id + '::' + v.filePath + '::' + v.isReal}"
                                                 onchange="updateSelectedCount()" />
                                         </td>
                                         <td>
@@ -156,6 +157,9 @@
                                                 th:text="${v.filePath}" class="text-decoration-none">
                                                 Voice File
                                             </a>
+                                        </td>
+                                        <td>
+                                            <a th:text="${v.isReal}">Read Voice</a>
                                         </td>
                                     </tr>
                                 </tbody>
