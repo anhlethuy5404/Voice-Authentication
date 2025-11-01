@@ -19,4 +19,17 @@ public class UserService {
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
+    public User createUser(User user) {
+
+        User userFindById = userRepository.findById(user.getId()).orElseThrow(() -> new RuntimeException("User not found"));
+
+        if(userFindById != null) {
+            throw new RuntimeException("User already exists");
+        }
+
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setCreatedAt(new Date());
+        user.setRole("USER");
+        return userRepository.save(user);
+    }
 }
