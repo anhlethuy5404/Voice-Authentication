@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đăng ký tài khoản</title>
+    <title>Create Account</title>
     <style>
         body {
             background: linear-gradient(135deg, #74b9ff, #a29bfe);
@@ -98,26 +98,26 @@
 
 <body>
 <div class="form-container">
-    <h2>Tạo tài khoản</h2>
-    <p>Vui lòng nhập đầy đủ thông tin bên dưới</p>
+    <h2>Create an Account</h2>
+    <p>Please fill in the information below</p>
 
     <div th:if="${error}" class="error-message" th:text="${error}"></div>
 
     <form th:action="@{/signup}" method="post" th:object="${user}">
-        <label for="username">Tên đăng nhập</label>
-        <input th:field="*{username}" type="text" id="username" placeholder="Nhập tên đăng nhập" required>
+        <label for="username">Username</label>
+        <input th:field="*{username}" type="text" id="username" placeholder="Enter your username" required>
 
-        <label for="name">Họ và tên</label>
-        <input th:field="*{name}" type="text" id="name" placeholder="Nhập họ tên" required>
+        <label for="name">Full Name</label>
+        <input th:field="*{name}" type="text" id="name" placeholder="Enter your full name" required>
 
         <label for="email">Email</label>
-        <input th:field="*{email}" type="email" id="email" placeholder="Nhập email" required>
+        <input th:field="*{email}" type="email" id="email" placeholder="Enter your email address" required>
 
-        <label for="password">Mật khẩu</label>
-        <input th:field="*{password}" type="password" id="password" placeholder="Tạo mật khẩu" required>
+        <label for="password">Password</label>
+        <input th:field="*{password}" type="password" id="password" placeholder="Create a password" required>
 
-        <button type="submit">Đăng ký</button>
-        <p style="margin-top:15px;">Đã có tài khoản? <a th:href="@{/login}">Đăng nhập</a></p>
+        <button type="submit">Sign Up</button>
+        <p style="margin-top:15px;">Already have an account? <a th:href="@{/login}">Login</a></p>
     </form>
 </div>
 </body>

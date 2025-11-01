@@ -22,11 +22,11 @@ public class LoginController {
                         Model model) {
 
         if (error != null) {
-            model.addAttribute("error", "Sai tên đăng nhập hoặc mật khẩu!");
+            model.addAttribute("error", "Username or password is incorrect");
         }
 
         if (logout != null) {
-            model.addAttribute("message", "Đăng xuất thành công!");
+            model.addAttribute("message", "Logged out successfully");
         }
 
         return "login";
@@ -47,14 +47,14 @@ public class LoginController {
     public String register(@ModelAttribute("user") User user, Model model) {
         try {
             userService.createUser(user);
-            model.addAttribute("successMessage", "Đăng ký thành công! Hãy đăng nhập.");
+            model.addAttribute("successMessage", "Register success!");
             return "redirect:/login?success=true";
         } catch (RuntimeException e) {
             model.addAttribute("error", e.getMessage());
-            model.addAttribute("user", user); // Giữ lại thông tin người dùng đã nhập
+            model.addAttribute("user", user);
             return "signup";
         } catch (Exception e) {
-            model.addAttribute("error", "Đã xảy ra lỗi khi đăng ký. Vui lòng thử lại sau.");
+            model.addAttribute("error", "Error, please try again!");
             model.addAttribute("user", user);
             return "signup";
         }
