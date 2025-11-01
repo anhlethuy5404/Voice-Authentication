@@ -25,7 +25,7 @@ public class TrainController {
     // ========== HIỂN THỊ FORM ==========
     @GetMapping("/train")
     public String showTrainPage(Model model) {
-        return "train";
+        return "adminTrain";
     }
 
     // ========== XỬ LÝ FORM SUBMIT ==========
@@ -127,7 +127,7 @@ public class TrainController {
             model.addAttribute("message", "Failed to start training: " + e.getMessage());
         }
 
-        return "train";
+        return "adminTrain";
     }
 
     // ========== LƯU KẾT QUẢ TRAINING ==========

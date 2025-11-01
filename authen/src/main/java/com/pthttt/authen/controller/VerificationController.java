@@ -23,7 +23,7 @@ import com.pthttt.authen.repository.UserRepository;
 import com.pthttt.authen.service.VerificationService;
 
 @Controller
-@RequestMapping("/verification")
+@RequestMapping("/user/verification")
 public class VerificationController {
     @Autowired
     private VerificationService verificationService;
@@ -99,4 +99,5 @@ public class VerificationController {
 
         return "verification";
     }
+
 }
