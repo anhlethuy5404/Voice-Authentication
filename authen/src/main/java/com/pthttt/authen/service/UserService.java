@@ -19,11 +19,14 @@ public class UserService {
     private BCryptPasswordEncoder passwordEncoder;
 
     public User createUser(User user) {
+        User existingUserByUsername = userRepository.findByUsername(user.getUsername());
+        if (existingUserByUsername != null) {
+            throw new RuntimeException("Tên đăng nhập đã tồn tại. Vui lòng chọn tên khác.");
+        }
 
-        User userFindById = userRepository.findById(user.getId()).orElseThrow(() -> new RuntimeException("User not found"));
-
-        if(userFindById != null) {
-            throw new RuntimeException("User already exists");
+        User existingUserByEmail = userRepository.findByEmail(user.getEmail());
+        if (existingUserByEmail != null) {
+            throw new RuntimeException("Email đã được sử dụng. Vui lòng sử dụng email khác.");
         }
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));

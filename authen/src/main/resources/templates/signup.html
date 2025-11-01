@@ -73,6 +73,26 @@
         a:hover {
             text-decoration: underline;
         }
+        .error-message {
+            background-color: #ff7675;
+            color: #fff;
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            text-align: left;
+            animation: slideDown 0.3s ease;
+        }
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
     </style>
 </head>
 
@@ -81,7 +101,8 @@
     <h2>Tạo tài khoản</h2>
     <p>Vui lòng nhập đầy đủ thông tin bên dưới</p>
 
-    <!-- FORM -->
+    <div th:if="${error}" class="error-message" th:text="${error}"></div>
+
     <form th:action="@{/signup}" method="post" th:object="${user}">
         <label for="username">Tên đăng nhập</label>
         <input th:field="*{username}" type="text" id="username" placeholder="Nhập tên đăng nhập" required>
