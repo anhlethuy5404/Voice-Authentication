@@ -9,7 +9,6 @@ import com.pthttt.authen.model.User;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Integer> {
-    User findByUsername(String username);
     User findByEmail(String email);
     List<User> findByRole(String role);
 }
