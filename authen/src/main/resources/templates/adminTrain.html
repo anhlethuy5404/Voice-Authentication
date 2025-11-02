@@ -221,7 +221,7 @@
         let epochCounter = 0;
         let ws = null;
         let trainingStarted = false;
-        let COMPLETE_TRAINING_DATA = null;  // ✅ Lưu toàn bộ data khi training xong
+        let COMPLETE_TRAINING_DATA = null;  // Lưu toàn bộ data khi training xong
 
         // WebSocket connection function
         function connectWebSocket() {
@@ -229,7 +229,7 @@
             ws = new WebSocket('ws://localhost:8080/ws/training-updates');
 
             ws.onopen = function () {
-                console.log('✅ WebSocket connected');
+                console.log('WebSocket connected');
                 updateStatus('Connected to training server', 'CONNECTED', 10);
             };
 
@@ -243,12 +243,12 @@
             };
 
             ws.onerror = function (error) {
-                console.error('❌ WebSocket error:', error);
+                console.error('WebSocket error:', error);
                 showError('WebSocket connection error');
             };
 
             ws.onclose = function () {
-                console.log('🔌 WebSocket disconnected');
+                console.log('WebSocket disconnected');
                 if (trainingStarted) {
                     setTimeout(connectWebSocket, 3000); // Reconnect after 3s
                 }
@@ -270,7 +270,7 @@
                     handleEpochMessage(data);
                     break;
                 case 'completed':
-                    console.log('🎉 Received COMPLETED message:', data);
+                    console.log('Received COMPLETED message:', data);
                     handleCompletedMessage(data);
                     break;
                 case 'error':
@@ -344,7 +344,7 @@
             const container = tbody.closest('div[style*="overflow-y"]');
             container.scrollTop = container.scrollHeight;
 
-            console.log(`ℹ️ INFO #${infoCounter}: ${message}`);
+            console.log(`INFO #${infoCounter}: ${message}`);
         }
 
         // EPOCH handler
@@ -385,20 +385,20 @@
         function handleCompletedMessage(data) {
             trainingStarted = false;
 
-            // ✅ LƯU TOÀN BỘ DATA VÀO BIẾN GLOBAL
+            // LƯU TOÀN BỘ DATA VÀO BIẾN GLOBAL
             COMPLETE_TRAINING_DATA = data;
 
             console.log('========== COMPLETED MESSAGE ==========');
-            console.log('📦 Full data:', data);
-            console.log('📋 Data keys:', Object.keys(data));
-            console.log('🔍 model_name:', data.model_name);
-            console.log('🔍 model_type:', data.model_type);
-            console.log('🔍 version:', data.version);
-            console.log('🔍 hyperparameters:', data.hyperparameters);
-            console.log('🔍 train_logs:', data.train_logs);
-            console.log('🔍 started_at:', data.started_at);
-            console.log('🔍 finished_at:', data.finished_at);
-            console.log('🔍 duration_seconds:', data.duration_seconds);
+            console.log('Full data:', data);
+            console.log('Data keys:', Object.keys(data));
+            console.log('model_name:', data.model_name);
+            console.log('model_type:', data.model_type);
+            console.log('version:', data.version);
+            console.log('hyperparameters:', data.hyperparameters);
+            console.log('train_logs:', data.train_logs);
+            console.log('started_at:', data.started_at);
+            console.log('finished_at:', data.finished_at);
+            console.log('duration_seconds:', data.duration_seconds);
             console.log('========================================');
 
             const message = data.message || 'Training completed successfully!';
@@ -461,7 +461,7 @@
             }
         });
 
-        // ✅ SAVE BUTTON HANDLER
+        // SAVE BUTTON HANDLER
         document.addEventListener('DOMContentLoaded', function () {
             const saveBtn = document.getElementById('saveResultBtn');
 
@@ -469,11 +469,11 @@
                 saveBtn.addEventListener('click', function () {
                     // Kiểm tra có data không
                     if (!COMPLETE_TRAINING_DATA) {
-                        alert('⚠️ No training data to save!');
+                        alert('No training data to save!');
                         return;
                     }
 
-                    console.log('📤 Sending data to backend:', COMPLETE_TRAINING_DATA);
+                    console.log('Sending data to backend:', COMPLETE_TRAINING_DATA);
 
                     // Disable button để tránh click nhiều lần
                     saveBtn.disabled = true;
@@ -494,10 +494,10 @@
                             return response.json();
                         })
                         .then(result => {
-                            console.log('✅ Save successful:', result);
+                            console.log('Save successful:', result);
 
                             // Hiển thị thông báo thành công
-                            alert('✅ Model saved successfully!');
+                            alert('Model saved successfully!');
 
                             // Đóng modal
                             const modal = bootstrap.Modal.getInstance(document.getElementById('completedModal'));
@@ -511,8 +511,8 @@
                             }, 500);
                         })
                         .catch(error => {
-                            console.error('❌ Save failed:', error);
-                            alert('❌ Failed to save model: ' + error.message);
+                            console.error('Save failed:', error);
+                            alert('Failed to save model: ' + error.message);
 
                             // Enable lại button
                             saveBtn.disabled = false;

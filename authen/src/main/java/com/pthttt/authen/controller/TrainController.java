@@ -22,13 +22,11 @@ public class TrainController {
     private final TrainService trainService;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    // ========== HIỂN THỊ FORM ==========
     @GetMapping("/train")
     public String showTrainPage(Model model) {
         return "adminTrain";
     }
 
-    // ========== XỬ LÝ FORM SUBMIT ==========
     @PostMapping("/train")
     public String trainModel(
             @RequestParam("model_id") int modelId,
