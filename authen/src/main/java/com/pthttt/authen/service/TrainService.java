@@ -55,48 +55,59 @@ public class TrainService {
         return trainRunRepository.findMaxVersionByModelId(modelId);
     }
 
-    public Map<String, Object> prepareDataset(List<Map<String, String>> data, int trainPercent, String modelType) {
+    public Map<String, Object> prepareDataset(List<Map<String, String>> data, int trainPercent, int valPercent, String modelType) {
         if (data == null || data.isEmpty()) {
             throw new IllegalArgumentException("Voice dataset is empty!");
         }
 
-        // 1️⃣ Trộn dữ liệu
+        // Trộn dữ liệu
         Collections.shuffle(data);
 
-        // 2️⃣ Chia train/val
-        int splitIndex = (int) (data.size() * trainPercent / 100.0);
-        List<Map<String, String>> trainData = new ArrayList<>(data.subList(0, splitIndex));
-        List<Map<String, String>> valData = new ArrayList<>(data.subList(splitIndex, data.size()));
+        // Chia train/val/test
+        int splitIndexTrain = (int) (data.size() * trainPercent / 100.0);
+        int splitIndexVal = (int) (data.size() * valPercent / 100.0);
+        List<Map<String, String>> trainData = new ArrayList<>(data.subList(0, splitIndexTrain));
+        List<Map<String, String>> valData = new ArrayList<>(data.subList(splitIndexTrain, splitIndexTrain + splitIndexVal));
+        List<Map<String, String>> testData = new ArrayList<>(data.subList(splitIndexTrain + splitIndexVal, data.size()));
 
-        // 3️⃣ Lấy danh sách user_id duy nhất
+        // Lấy danh sách user_id duy nhất
         List<String> uniqueIds = data.stream()
                 .map(v -> v.get("user_id"))
                 .filter(Objects::nonNull)
                 .distinct()
                 .sorted()
                 .collect(Collectors.toList());
-        // 4️⃣ Ánh xạ user_id → label (0,1,2,...)
+
+        // Ánh xạ user_id → label (0,1,2,...)
+
         Map<String, Integer> idToLabel = new HashMap<>();
         for (int i = 0; i < uniqueIds.size(); i++) {
             idToLabel.put(uniqueIds.get(i), i);
         }
 
-        // 5️⃣ Áp dụng ánh xạ, đồng thời loại bỏ user_id
+        // Áp dụng ánh xạ, đồng thời loại bỏ user_id
         Consumer<List<Map<String, String>>> remapAndClean = (list) -> {
             for (Map<String, String> item : list) {
                 String uid = item.get("user_id");
-                item.put("label", String.valueOf(idToLabel.get(uid)));
+                if (modelType.equals("embedding")) {
+                    item.put("label", String.valueOf(idToLabel.get(uid)));
+                }
+                else {
+                    item.put("label", item.get("real_voice"));
+                }
                 item.remove("user_id");
             }
         };
 
         remapAndClean.accept(trainData);
         remapAndClean.accept(valData);
+        remapAndClean.accept(testData);
 
-        // 6️⃣ Trả kết quả cuối cùng
+        // Trả kết quả cuối cùng
         return Map.of(
                 "train_data", trainData,
                 "val_data", valData,
+                "test_data", testData,
                 "num_classes", uniqueIds.size(),
                 "label_map", idToLabel);
     }
@@ -110,7 +121,9 @@ public class TrainService {
 
             // Parse version từ save_dir
             String saveDir = (String) data.get("save_dir");
-            int version = Integer.parseInt(saveDir.substring(saveDir.lastIndexOf("_") + 1));
+            String[] tmp = saveDir.split("/");
+
+            int version = Integer.parseInt(tmp[tmp.length-2].substring(tmp[tmp.length-2].length()-1));
             trainRun.setVersion(version);
 
             trainRun.setStatus("COMPLETED");
@@ -171,7 +184,7 @@ public class TrainService {
                 score.setTrainRun(trainRun);
 
                 scoreRepository.save(score);
-                log.info("✅ Saved Score");
+                log.info("Saved Score");
             }
 
             log.info("🎉 Training result saved successfully!");

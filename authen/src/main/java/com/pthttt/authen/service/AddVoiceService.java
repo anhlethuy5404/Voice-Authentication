@@ -26,7 +26,7 @@ public class AddVoiceService {
     @Autowired
     private UserRepository userRepository;
 
-    private final String uploadDirName = "uploads";
+    private final String uploadDirName = "../uploads";
     private final Path rootPath;
 
     public AddVoiceService() {
