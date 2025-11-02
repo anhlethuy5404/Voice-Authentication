@@ -10,5 +10,15 @@ import com.pthttt.authen.websocket.TrainingWebSocketHandler;
 @EnableWebSocket
 public class WebSocketConfig implements WebSocketConfigurer {
 
+    private final TrainingWebSocketHandler trainingWebSocketHandler;
 
+    public WebSocketConfig(TrainingWebSocketHandler trainingWebSocketHandler) {
+        this.trainingWebSocketHandler = trainingWebSocketHandler;
+    }
+
+    @Override
+    public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
+        registry.addHandler(trainingWebSocketHandler, "/ws/training-updates")
+                .setAllowedOrigins("*"); // In production, specify exact origins
+    }
 }
