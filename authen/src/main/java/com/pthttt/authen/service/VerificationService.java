@@ -48,7 +48,7 @@ public class VerificationService {
     }
 
     public List<TrainRun> getAvailableTrainRun() {
-        return trainRunRepository.findAll();
+        return trainRunRepository.findByType("embedding");
     }
 
     public List<AuthLog> verify(MultipartFile audioFile, Integer trainRunId) throws Exception {
@@ -56,7 +56,7 @@ public class VerificationService {
                 .orElseThrow(() -> new Exception("TrainRun not found with id: " + trainRunId));
 
         float[] newEmbedding = machineLearningService.getEmbeddingForVerification(audioFile, trainRun.getModel().getName(), trainRun.getFilePath());
-        normalize(newEmbedding);
+        // normalize(newEmbedding);
         List<Vector> vectors = vectorRepository.findByTrainRunId(trainRunId);
 
         if (vectors.isEmpty()) {
@@ -67,7 +67,7 @@ public class VerificationService {
 
         for (Vector vector : vectors) {            
             float[] existingEmbedding = toFloatArray(vector.getEmbeddingVector());
-            normalize(existingEmbedding);
+            // normalize(existingEmbedding);
             double similarity = cosineSimilarity(newEmbedding, existingEmbedding);
             record.put(vector, similarity);
         }
@@ -94,11 +94,24 @@ public class VerificationService {
     }
 
     private double cosineSimilarity(float[] vectorA, float[] vectorB) {
+        // double dotProduct = 0.0;
+        // for (int i = 0; i < vectorA.length; i++) {
+        //     dotProduct += vectorA[i] * vectorB[i];
+        // }
+        // return dotProduct;
         double dotProduct = 0.0;
+        double normA = 0.0;
+        double normB = 0.0;
         for (int i = 0; i < vectorA.length; i++) {
             dotProduct += vectorA[i] * vectorB[i];
+            normA += vectorA[i] * vectorA[i];
+            normB += vectorB[i] * vectorB[i];
         }
-        return dotProduct;
+        if (normA == 0.0 || normB == 0.0) {
+            return 0.0;
+        } else {
+            return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
+        }
     }
 
     private void normalize(float[] vector) {

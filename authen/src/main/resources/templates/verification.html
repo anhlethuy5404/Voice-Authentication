@@ -240,7 +240,7 @@
                 filteredTrainRuns.forEach(run => {
                     const option = document.createElement('option');
                     option.value = run.id;
-                    option.textContent = `ID: ${run.id} - Version: ${run.version}`;
+                    option.textContent = `Version: ${run.version}`;
                     trainRunSelect.appendChild(option);
                 });
             }

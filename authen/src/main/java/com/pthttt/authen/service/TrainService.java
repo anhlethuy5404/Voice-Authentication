@@ -137,6 +137,8 @@ public class TrainService {
             trainRun.setFinishedAt(LocalDateTime.parse(finishedAtStr));
 
             trainRun.setModel(modelRepository.getModelById((int) data.get("model_id")));
+            trainRun.setType((String) data.get("model_type"));
+
 
             trainRunRepository.save(trainRun);
             log.info("Saved TrainRun: id={}, version={}", trainRun.getId(), version);

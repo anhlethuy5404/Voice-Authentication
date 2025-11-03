@@ -43,7 +43,7 @@ public class AddEmbeddingController {
     @GetMapping("/add-embedding")
     public String showAddEmbeddingPage(ModelMap model) {
         List<Voice> voices = voiceRepository.findAll();
-        List<TrainRun> trainRuns = trainRunRepository.findAll();
+        List<TrainRun> trainRuns = trainRunRepository.findByType("embedding");
         List<Map<String, Object>> voiceData = voices.stream()
             .filter(voice -> voice.getIsReal() == 1)
             .map(voice -> {

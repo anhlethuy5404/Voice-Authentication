@@ -47,6 +47,11 @@ public class AddEmbeddingService {
         String voiceFilePath = voice.getFilePath();
         String modelName = model.getName();
         String ckptPath = trainRun.getFilePath();
+        // Path basePath = Paths.get(System.getProperty("user.dir"));
+        // Path parentDir = basePath.getParent();
+        // ckptPath = parentDir.resolve(ckptPath.substring(3)).normalize().toString();
+        // System.out.println(ckptPath);
+
 
         byte[] embedding = machineLearningService.getEmbeddingByFilePath(voiceFilePath, modelName, ckptPath);
 
